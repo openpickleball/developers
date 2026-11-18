@@ -33,7 +33,7 @@ In `openpickleball/developers` (worktree `/home/bradstricherz/PycharmProjects/OP
 
 - `pyproject.toml`, `uv.lock`: a non-package uv project with `mkdocs-material` pinned (exact versions), Python 3.13.
 - `.python-version`: 3.13.
-- `mkdocs.yml`: site name, `site_url: https://dev.openpb.org/`, repo link, Material theme with `font: false`, light and dark palette, navigation, `pymdownx.superfences`, `admonition`, strict validation of links (`validation:` block set to warn on omitted, absolute, and unrecognized links), `custom_dir: overrides`, copyright line naming CC BY 4.0.
+- `mkdocs.yml`: site name, `site_url: https://dev.openpb.org/`, a repository link through `extra.social` (not `repo_url`: with `repo_url`, Material's script fetches star and fork counts from `api.github.com` on every page load, which breaks criterion 5), Material theme with `font: false`, light and dark palette, navigation, `pymdownx.superfences`, `admonition`, strict validation of links (`validation:` block set to warn on omitted, absolute, and unrecognized links), `custom_dir: overrides`, copyright line naming CC BY 4.0.
 - `overrides/main.html`: the announcement block with the demonstration notice.
 - `docs/index.md`, `docs/architecture.md`, `docs/stack.md`, `docs/match-to-rating.md`, `docs/contributing.md`, `docs/glossary.md`.
 - `.github/workflows/pages.yml`.
