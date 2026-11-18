@@ -1,0 +1,9 @@
+# Code owners for openpickleball/developers.
+#
+# GitHub requests a review from the owners of every path a pull request
+# changes. The last matching rule wins, so the default comes first.
+
+* @openpickleball/maintainers
+
+# CI, the Pages deploy, the DCO check, and this file.
+/.github/ @openpickleball/maintainers
