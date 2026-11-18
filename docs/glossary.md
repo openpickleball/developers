@@ -49,7 +49,7 @@ One line per term. The source of truth is the backend's [`CONTEXT.md`](https://g
 - **Live Update**: a provisional rating change applied when a Match arrives, between Replays.
 - **Frozen**: a player whose rating is used in a Match but does not move, because the Match is dated on or before their imported baseline.
 - **Clamped**: a player whose change was cut short by the rating floor or ceiling.
-- **Shadow Mode**: running the engine on real results without publishing or relying on its Ratings. OPEN is in shadow mode now.
+- **Shadow Mode**: running the engine on real results without publishing or relying on its Ratings. Testing the engine in shadow mode is a current roadmap priority.
 
 ## Records and governance
 

@@ -10,13 +10,13 @@ Each repository picks its own tools. This page lists them and gives the reason, 
 | --- | --- | --- |
 | Language and framework | Python 3.13, Django 5.2 LTS | The engine is Python, so the backend can import it and run the same code for the API, replays, and backtests. Django's admin is the first back office for moderators. 5.2 LTS has security support until April 2028. [ADR 0001](https://github.com/openpickleball/backend/blob/main/docs/adr/0001-django.md) |
 | API | django-ninja at `/api/v1/` | Typed operations and an OpenAPI document, with one error format and stable operation ids for generated clients. [ADR 0005](https://github.com/openpickleball/backend/blob/main/docs/adr/0005-api-versioning-and-error-format.md) |
-| Database | Postgres, through psycopg 3 | Holds the ledger and every record. Database constraints and triggers back the ledger and audit log rules. [ADR 0007](https://github.com/openpickleball/backend/blob/main/docs/adr/0007-append-only-audit-log.md) |
+| Database | Postgres, through psycopg 3 | Holds the ledger and every record. Database constraints back the ledger, and a trigger keeps the audit log append-only. [ADR 0007](https://github.com/openpickleball/backend/blob/main/docs/adr/0007-append-only-audit-log.md) |
 | Cache and broker | Valkey | DigitalOcean's managed cache is Valkey, which speaks the Redis protocol, so Django's cache and Celery work unchanged. [Issue #1, decision Q11](https://github.com/openpickleball/backend/issues/1) |
 | Background tasks | Celery with django-celery-beat | Four queues (`default`, `ratings`, `email`, `webhooks`), late acknowledgement, and periodic tasks from the database scheduler. [ADR 0006](https://github.com/openpickleball/backend/blob/main/docs/adr/0006-celery-queues-and-broker.md) |
 | Accounts | django-allauth 65, headless | Sign-up, login, email verification, and password reset as an API for the web app, with email-only login. [ADR 0014](https://github.com/openpickleball/backend/blob/main/docs/adr/0014-headless-account-authentication.md) |
-| Partner access | django-oauth-toolkit | Partners reach the API as OAuth2 clients, with an owning organizer, an approval, and hashed client secrets. [ADR 0010](https://github.com/openpickleball/backend/blob/main/docs/adr/0010-partner-application-model.md) |
+| Partner access | django-oauth-toolkit | Partners reach the API as OAuth2 clients, with an optional owning organizer, an approval, and hashed client secrets. [ADR 0010](https://github.com/openpickleball/backend/blob/main/docs/adr/0010-partner-application-model.md) |
 | Email | django-anymail with Resend | Sent from an outbox on the `email` queue, so a slow provider never slows a request. [ADR 0016](https://github.com/openpickleball/backend/blob/main/docs/adr/0016-email-outbox.md) |
-| Serving | gunicorn, WhiteNoise, django-cors-headers | gunicorn runs the app, WhiteNoise serves static files, and CORS covers the API paths only. |
+| Serving | gunicorn, WhiteNoise, django-cors-headers | gunicorn runs the app, WhiteNoise serves static files, and CORS covers the API and account paths only. |
 | Tooling | uv, pytest, factory_boy, ruff, mypy (strict), pre-commit | One lockfile, tests against real Postgres, and strict types. |
 | Hosting | DigitalOcean App Platform | Planned. |
 
@@ -29,7 +29,7 @@ Each repository picks its own tools. This page lists them and gives the reason, 
 | Language | Python 3.11 or later | The backend imports it in-process ([ADR 0001](https://github.com/openpickleball/backend/blob/main/docs/adr/0001-django.md)). |
 | Dependencies | None at runtime | Plain Python, built with hatchling. |
 | Tooling | pytest, ruff, mypy | Tests, lint, and types. |
-| Releases | Dev releases on TestPyPI only | The engine is a demonstration, so it is not on PyPI. The backend will pin a release tag ([backend issue #1, decision Q4](https://github.com/openpickleball/backend/issues/1)). See [releasing](https://github.com/openpickleball/engine/blob/main/docs/releasing.md). |
+| Releases | Dev releases on TestPyPI only | Tagged releases publish to TestPyPI. The real PyPI is not set up yet. The backend will pin a release tag ([backend issue #1, decision Q4](https://github.com/openpickleball/backend/issues/1)). See [releasing](https://github.com/openpickleball/engine/blob/main/docs/releasing.md). |
 
 ## Frontend
 

@@ -14,7 +14,7 @@ What exists today:
 - The **engine** computes and replays ratings as a Python package, with a dev release on TestPyPI only.
 - The **frontend** serves a static teaser at [openpb.org](https://openpb.org). The full web app is in development and not deployed.
 
-The project is in shadow mode: the engine is to be tested on real results without anyone relying on its ratings. The [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) lists what must happen before ratings go live, including a seated governing board and published validation results.
+Testing the engine on real match results in shadow mode, so that no one relies on its ratings yet, is a current priority on the roadmap. The [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) lists what must happen before ratings go live, including a seated governing board and published validation results.
 
 ## Who this site is for
 

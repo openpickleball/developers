@@ -25,7 +25,7 @@ Everyone is welcome. You don't need to write code: players, organizers, platform
 
 ## Rating spec
 
-[openpickleball/rating-spec](https://github.com/openpickleball/rating-spec): anyone can propose or challenge a change by opening an issue, with evidence. A change that gets support becomes an RFC under the [RFC process](https://github.com/openpickleball/rating-spec/blob/main/rfcs/README.md). The governing board makes the final decision.
+[openpickleball/rating-spec](https://github.com/openpickleball/rating-spec): anyone can propose or challenge a change by opening an issue with the [rating spec change form](https://github.com/openpickleball/.github/issues/new/choose) in the `.github` repository, with evidence. A change that gets support becomes an RFC under the [RFC process](https://github.com/openpickleball/rating-spec/blob/main/rfcs/README.md). The governing board makes the final decision.
 
 ## This site
 

@@ -61,13 +61,13 @@ Each match gets a fingerprint of its teams, date, and scores. An exact duplicate
 
 **Implemented** in the backend, including the player operations `POST /api/v1/matches/{code}/confirm` and `/dispute`. Moderator screens are **planned**.
 
-A match has four statuses: pending, confirmed, disputed, and voided. A match from someone with Event or Club authority is confirmed when it is created. A self-submission stays pending until at least one player on each team confirms it, or until someone with Event or Club authority submits the same match (same teams, date, and scores). A player may dispute a match once. A disputed match stops counting until a moderator (an active Account with the `matches.moderate_match` permission) resolves it as confirmed or voided. An optional daily task voids pending matches older than a set number of days. See [ADR 0013](https://github.com/openpickleball/backend/blob/main/docs/adr/0013-match-confirmation-and-changes.md) and [ADR 0015](https://github.com/openpickleball/backend/blob/main/docs/adr/0015-first-party-match-endpoints.md).
+A match has four statuses: pending, confirmed, disputed, and voided. A match from someone with Event or Club authority is confirmed when it is created. A self-submission stays pending until at least one player on each team confirms it (the submitter's own submission does not count as their team's confirmation), or until someone with Event or Club authority submits the same match (same teams, date, and scores). A player may dispute a match once. A disputed match stops counting until a moderator (an active Account with the `matches.moderate_match` permission) resolves it as confirmed or voided. An optional daily task voids pending matches older than a set number of days. See [ADR 0013](https://github.com/openpickleball/backend/blob/main/docs/adr/0013-match-confirmation-and-changes.md) and [ADR 0015](https://github.com/openpickleball/backend/blob/main/docs/adr/0015-first-party-match-endpoints.md).
 
 ## 6. The append-only ledger and corrections
 
 **Implemented** in the backend.
 
-The ledger is the ordered record of every counted match, and it is the source of truth for ratings. A match is never deleted, and only its status ever changes. A wrong match is voided, and a correction is a new match that points to it, so the ledger keeps both. A match counts when it is confirmed and no open duplicate flag holds it. Every status change writes an Audit Event to an append-only audit log ([ADR 0007](https://github.com/openpickleball/backend/blob/main/docs/adr/0007-append-only-audit-log.md)). Each change also sends a signal (`match_confirmed` or `match_changed`) inside its transaction, for the rating and webhook work to use. Nothing listens to those signals yet.
+The ledger is the ordered record of every counted match, and it is the source of truth for ratings. A match is never deleted, and only its status ever changes. A wrong match is voided, and a correction is a new match that points to it, so the ledger keeps both. A match counts when it is confirmed and no open duplicate flag holds it. Every status change writes an Audit Event to an append-only audit log ([ADR 0007](https://github.com/openpickleball/backend/blob/main/docs/adr/0007-append-only-audit-log.md)). A change that makes a match start or stop counting sends a signal (`match_confirmed` or `match_changed`) inside its transaction, for the rating and webhook work to use. Nothing listens to those signals yet.
 
 ## 7. Engine adapter
 
@@ -89,9 +89,9 @@ Authoritative ratings come from a deterministic replay: the engine rebuilds ever
 
 ## 10. Serving ratings
 
-**Planned** in the backend ([backend#53](https://github.com/openpickleball/backend/issues/53)).
+**Planned** in the backend.
 
-A ratings API will let any app read ratings, history, and stats for free. While the engine is a demonstration, its output is labeled as demonstration ratings. Ratings go live only after the steps in the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md), including published validation results and a seated governing board.
+A ratings API will let any app read ratings and rating history for free ([backend#53](https://github.com/openpickleball/backend/issues/53)). Stats are planned separately ([backend#55](https://github.com/openpickleball/backend/issues/55), [#56](https://github.com/openpickleball/backend/issues/56), [#57](https://github.com/openpickleball/backend/issues/57)). While the engine is a demonstration, its output is labeled as demonstration ratings. Ratings go live only after the steps in the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md), including published validation results and a seated governing board.
 
 ## Starting ratings
 
