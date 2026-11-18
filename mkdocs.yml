@@ -1,0 +1,55 @@
+site_name: OPEN for developers
+site_url: https://dev.openpb.org/
+site_description: How OPEN, the Open Pickleball Evaluation Network, works for developers.
+copyright: Text licensed under CC BY 4.0. Build configuration licensed under Apache-2.0.
+
+theme:
+  name: material
+  custom_dir: overrides
+  font: false
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.footer
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Tech stack: stack.md
+  - How a match becomes a rating: match-to-rating.md
+  - Contributing: contributing.md
+  - Glossary: glossary.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+
+extra:
+  generator: false
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/openpickleball/developers
+      name: Source for this site on GitHub
+
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
