@@ -25,6 +25,11 @@ theme:
 
 nav:
   - Home: index.md
+  - Architecture: architecture.md
+  - Tech stack: stack.md
+  - How a match becomes a rating: match-to-rating.md
+  - Contributing: contributing.md
+  - Glossary: glossary.md
 
 markdown_extensions:
   - admonition
