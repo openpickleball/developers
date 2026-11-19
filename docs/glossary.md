@@ -41,6 +41,8 @@ One line per term. The source of truth is the backend's [`CONTEXT.md`](https://g
 - **Rating Format**: singles, doubles, mixed doubles, men's doubles, or women's doubles.
 - **RD (rating deviation)**: how uncertain a Rating is. It grows with inactivity and shrinks with play.
 - **Reliability**: a 0 to 100% score shown with every Rating, earned through OPEN matches.
+- **Established**: a Rating with Reliability of at least 60 and at least 3 counted verified matches. A label only.
+- **Network Connectivity**: whether a Player's group of partners and opponents connects to the wider network of players, so their Rating sits on the shared scale.
 - **Seed**: a Player's starting Rating before any OPEN matches.
 - **External Rating Snapshot**: a verified rating from a standard external rating system, used only as a Seed.
 - **Imported Reliability**: the external system's reliability, shown separately from OPEN-earned Reliability.
