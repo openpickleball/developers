@@ -16,6 +16,10 @@ What exists today:
 
 Testing the engine on real match results in shadow mode, so that no one relies on its ratings yet, is a current priority on the roadmap. The [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) lists what must happen before ratings go live, including a seated governing board and published validation results.
 
+## Players never pay
+
+The [mission charter](https://github.com/openpickleball/.github/blob/main/CHARTER.md) rules out subscriptions, paid tiers, advertisements, and premium features, so no part of OPEN is for sale, including a rating reset or a stat. Under the [funding rules](https://github.com/openpickleball/.github/blob/main/GOVERNANCE.md#funds), every dollar in and out is published, and donors, grant makers, and sponsors get no say over ratings.
+
 ## Who this site is for
 
 - **Developers** who want to contribute to the backend, engine, or frontend.
