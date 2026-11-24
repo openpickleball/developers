@@ -25,7 +25,7 @@ A strict build fails on a broken internal link or a page missing from the naviga
 - Plain, short sentences. No emojis and no em dashes. Prefer "player", "match", and "organizer" over generic words like "user".
 - Link to each repository's decisions (ADRs, `CONTEXT.md`, the rating spec) instead of copying them. A one-sentence summary is fine.
 - Check every claim against the repository it describes, on `main`. Mark each step of how a match becomes a rating as implemented or planned.
-- Keep the demonstration notice: OPEN publishes no ratings yet, and engine output is labeled as demonstration ratings.
+- Keep the status notice: no OPEN rating is live, the engine is the reference implementation of the OPEN rating method, and its outputs are not OPEN ratings.
 - Load nothing from another host: no web fonts, CDN scripts, Mermaid, or remote images. The site must load while every OPEN service is down.
 
 ## Hard rules

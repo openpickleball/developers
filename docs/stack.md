@@ -29,7 +29,7 @@ Each repository picks its own tools. This page lists them and gives the reason, 
 | Language | Python 3.11 or later | The backend imports it in-process ([ADR 0001](https://github.com/openpickleball/backend/blob/main/docs/adr/0001-django.md)). |
 | Dependencies | None at runtime | Plain Python, built with hatchling. |
 | Tooling | pytest, ruff, mypy | Tests, lint, and types. |
-| Releases | Dev releases on TestPyPI only | Tagged releases publish to TestPyPI. The real PyPI is not set up yet. The backend will pin a release tag ([backend issue #1, decision Q4](https://github.com/openpickleball/backend/issues/1)). See [releasing](https://github.com/openpickleball/engine/blob/main/docs/releasing.md). |
+| Releases | On PyPI as `openpickleball-engine`, version 1.0.0 | Each tagged release publishes to TestPyPI, then to PyPI after approval. Install with `pip install openpickleball-engine`. The backend will pin a release tag ([backend issue #1, decision Q4](https://github.com/openpickleball/backend/issues/1)). See [releasing](https://github.com/openpickleball/engine/blob/main/docs/releasing.md). |
 
 ## Frontend
 

@@ -72,7 +72,7 @@ What the API serves today: health checks, the signed-in account, a player's own 
 
 Repository: [openpickleball/engine](https://github.com/openpickleball/engine).
 
-The reference rating engine, a Python package (`openpickleball-engine`, imported as `open_engine`) with no runtime dependencies. It records matches live and rebuilds ratings with a deterministic replay of the ledger. The backend will import it in-process, so the API, scheduled replays, and backtests all run the same code ([ADR 0001](https://github.com/openpickleball/backend/blob/main/docs/adr/0001-django.md)). The backend does not depend on it yet. When it does, the engine is pinned to a release tag, and its output stays labeled as demonstration ratings.
+The reference rating engine, a Python package (`openpickleball-engine`, imported as `open_engine`) with no runtime dependencies. It records matches live and rebuilds ratings with a deterministic replay of the ledger. The backend will import it in-process, so the API, scheduled replays, and backtests all run the same code ([ADR 0001](https://github.com/openpickleball/backend/blob/main/docs/adr/0001-django.md)). The backend does not depend on it yet. When it does, the engine is pinned to a release tag. The current release is 1.0.0, on PyPI as `openpickleball-engine`. The engine is the reference implementation of the OPEN rating method, and its outputs are not OPEN ratings.
 
 ## Rating spec
 

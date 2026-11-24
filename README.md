@@ -4,7 +4,7 @@
 
 The developer site for OPEN, the Open Pickleball Evaluation Network, served at [dev.openpb.org](https://dev.openpb.org). It explains how OPEN works for a technical audience: the architecture, the tech stack, and how a match becomes a rating.
 
-> **Project status:** OPEN is in early development and publishes no ratings yet. The rating engine is a demonstration, and its output is labeled as demonstration ratings, not OPEN ratings.
+> **Project status:** OPEN is in early development, and no OPEN rating is live. The rating engine is the reference implementation of the OPEN rating method. Its outputs are not OPEN ratings.
 
 ## Preview locally
 
