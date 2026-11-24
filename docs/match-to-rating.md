@@ -75,19 +75,32 @@ The ledger is the ordered record of every counted match, and it is the source of
 
 The backend will pin the engine to a release tag ([backend#43](https://github.com/openpickleball/backend/issues/43)) and map counted matches to the engine's input ([backend#44](https://github.com/openpickleball/backend/issues/44)). The match type comes from the Event's kind, or is self-reported when there is no Event. The backend never computes ratings itself: the math lives in the engine.
 
-## 8. Live updates
+## 8. How the engine moves a rating
+
+**Implemented** in the engine.
+
+The engine is an open-source Python package, `openpickleball-engine`, under AGPL-3.0-or-later. Its [rating model](https://github.com/openpickleball/engine/blob/main/docs/model.md) states every equation it uses and the function that computes each one. In short:
+
+- **Expected result.** A team's rating is the mean of its players' ratings. The gap between the two teams gives each team an expected share of the points.
+- **Performance.** By default, a team's performance is its share of all points across the match's games. The rating moves by the difference between that share and the expected share. So a team can win and still lose rating, when it wins by less than expected, and a team that loses by about as much as expected barely moves. See [match performance](https://github.com/openpickleball/engine/blob/main/docs/behavior.md#match-performance).
+- **Uncertainty.** Each rating carries a rating deviation (RD). Each player moves by their own K, which grows with their RD, so a new or returning player moves faster than a settled one. RD shrinks with each counted match and grows with inactivity, as in Glicko-style systems. Inactivity never moves the rating itself.
+- **Weight.** The match type sets how much a match counts. Under the current defaults: tournament 1.00, league 0.90, recreational verified 0.75, and self-reported 0.40. Longer games and more games add a little weight, up to a cap. These defaults are declared choices or uncalibrated placeholders, as the [parameter table](https://github.com/openpickleball/engine/blob/main/docs/model.md#parameters) marks each one.
+
+Every result reports the expected share, the actual share, the difference, the weight, and each player's change, so any rating change can be explained from the match that caused it. A replay of the same ledger, seeds, config, and date always gives the same ratings, so any change can also be reproduced (see [Replay with provenance](#10-replay-with-provenance)). The engine can also predict a match before it is played, as an expected point share and a win probability. No app shows those predictions to players yet.
+
+## 9. Live updates
 
 **Implemented** in the engine. **Planned** in the backend ([backend#46](https://github.com/openpickleball/backend/issues/46)).
 
 When a match arrives between replays, the engine can update ratings at once. These live updates are provisional. Each rating carries a count of live updates since the last replay, so a reader can tell a provisional rating from an authoritative one.
 
-## 9. Replay with provenance
+## 10. Replay with provenance
 
 **Implemented** in the engine. **Planned** in the backend ([ratings pipeline epic, backend#109](https://github.com/openpickleball/backend/issues/109)).
 
 Authoritative ratings come from a deterministic replay: the engine rebuilds every rating from the seeds and the full ledger as of a date. The same ledger, seeds, config, and date always give the same result. Each replay returns its provenance: the as-of date, the config version, the config fingerprint, and match counts. The backend must store that provenance with every replay, so any published rating can be reproduced. Each published version of the [rating spec](https://github.com/openpickleball/rating-spec) will name the config version and fingerprint that implement it.
 
-## 10. Serving ratings
+## 11. Serving ratings
 
 **Planned** in the backend.
 
@@ -98,3 +111,46 @@ A ratings API will let any app read ratings and rating history for free ([backen
 **Implemented** in the engine. **Planned** in the backend.
 
 A player starts from a seed. A seed can come from a verified rating in a standard external rating system, with its source, date, and evidence. An imported rating is only a starting point: it never overwrites a rating earned from OPEN matches, and its reliability is shown apart from OPEN-earned reliability.
+
+## Reliability and established ratings
+
+**Implemented** in the engine. **Planned** in the backend, which will serve both with each rating ([backend#53](https://github.com/openpickleball/backend/issues/53)).
+
+Reliability is a score from 0 to 100, earned only from OPEN matches. It combines the player's RD with the variety of their partners and opponents over the last year. An imported reliability never counts toward it.
+
+A rating is **established** when its reliability is at least 60 and the player has at least 3 counted verified matches: tournament, league, or recreational verified, which all come from Events an Organizer runs. Self-reported matches can raise reliability, but they never count toward that minimum. The engine reports whether a rating is established with every player summary, so a rating that is not established can be labeled as such. Both thresholds are labels: they change no rating. See [Established](https://github.com/openpickleball/engine/blob/main/docs/behavior.md#established).
+
+## Evaluation
+
+**Implemented** in the engine: the tools. **Planned**: running them on real match results and publishing what they show.
+
+The engine predicts each match from ratings that have not seen it yet, then scores those predictions for error and calibration. It also fits the expectation scale and the win probability calibration, and says when the data do not pin a value down. See [evaluation and calibration](https://github.com/openpickleball/engine/blob/main/docs/model.md#evaluation-and-calibration). No evaluation of real match results is published yet. Testing the engine on real results in shadow mode, and publishing the validation results, are steps on the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) before any rating goes live ([engine#49](https://github.com/openpickleball/engine/issues/49)).
+
+## Closed groups
+
+**Implemented** in the engine as a label. Its reliability cap is **off by default** ([engine#86](https://github.com/openpickleball/engine/issues/86)).
+
+Ratings are relative. A group that plays only itself has no matches that tie its scale to anyone else's, so its ratings can drift away from the wider network. RD and variety cannot see this: a closed group can reach low RD, full variety, and established ratings on its own. Matches between players from different groups are what place those groups on one scale.
+
+So the engine reports network connectivity with every player summary: whether the player's group of regular partners and opponents connects to the wider network, through enough outside players on enough dates. When `connectivity_reliability_cap` is set, a player who is not connected has reliability held under the cap, so their rating is not established. The cap is off by default because group sizes can game the rule and it could cap players in a real but smaller community. [engine#86](https://github.com/openpickleball/engine/issues/86) tracks making it robust before it is turned on. See [Network connectivity](https://github.com/openpickleball/engine/blob/main/docs/behavior.md#network-connectivity).
+
+## Guarding against gamed ratings
+
+Each guard below is marked like the steps above. None of them costs a player anything or needs a paid verification.
+
+**Self-reported matches.** **Implemented** in the engine and the backend. A self-reported match counts only when a player on each team confirms it (see [Confirmation and dispute](#5-confirmation-and-dispute)). It weighs 0.40 against a tournament match's 1.00. Under the defaults, each earlier self-reported match between the same two teams in the last 90 days halves its weight, and a fifth one in that window is rejected.
+
+**Losing on purpose to enter a lower division.** **Planned** in the backend.
+
+- An Event will be able to set division eligibility by a player's highest authoritative rating over a recent window, such as 6 or 12 months, instead of their current rating. Lowering a rating before an event then stops paying off ([backend#174](https://github.com/openpickleball/backend/issues/174)).
+- A player whose results run far above expectation in self-reported or recreational play and far below it in tournament or league play will be flagged for moderator review. The expectations come from the engine's out-of-sample predictions, and the flag rules will be published. A flag never changes a rating by itself ([backend#175](https://github.com/openpickleball/backend/issues/175)).
+- A player whose results run far from their seed will be flagged for review too ([backend#51](https://github.com/openpickleball/backend/issues/51)).
+
+The engine does not cap how far one match can move a rating, beyond the 2.0 to 8.0 range.
+
+**Multiple and colluding accounts.** Partly **implemented**, partly **planned**.
+
+- Implemented: an established rating needs verified matches from Events an Organizer runs, so accounts that only confirm each other's self-reported matches can never become established.
+- Implemented: every replay reports the net rating its matches added to or removed from each rating format, so rating created by repeated matches between the same accounts shows up.
+- Planned: limit the rating that repeated matches between the same accounts can create ([engine#82](https://github.com/openpickleball/engine/issues/82)).
+- Planned: detect rings of accounts that confirm each other's matches, for example a set of players whose matches are almost all against each other, from data OPEN already holds ([backend#209](https://github.com/openpickleball/backend/issues/209)).
