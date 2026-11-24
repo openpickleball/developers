@@ -7,7 +7,7 @@ This file gives Claude Code guidance for working in this repository.
 The developer site for OPEN, the Open Pickleball Evaluation Network, served at [dev.openpb.org](https://dev.openpb.org). It explains how OPEN works for a technical audience: the architecture, the tech stack, and how a match becomes a rating. It is a static MkDocs site built with Material for MkDocs and deployed to GitHub Pages. It holds no application code.
 
 - `docs/`: the site's pages. Every page is listed in `nav` in `mkdocs.yml`.
-- `overrides/main.html`: the theme override that shows the site-wide demonstration notice.
+- `overrides/main.html`: the theme override that shows the site-wide status notice.
 - `mkdocs.yml`: site configuration. `validation` turns broken links and anchors into warnings, which `--strict` fails on.
 - `plans/`: plans recorded for issues before their work lands, named `YYYY-MM-DD-issue-<N>-<slug>.md`. They live outside `docs/` so the site does not publish them.
 - `.github/workflows/pages.yml`: the strict build on every pull request, and the deploy to Pages on a push to `main`.
@@ -29,7 +29,7 @@ The `build` job in `pages.yml` and the `sign-off` job in `dco.yml` are required 
 ## Hard rules
 
 1. **No real player data, anywhere.** Use made-up names and OPEN Codes, such as `P-7K3M-QX9H`.
-2. **Keep the demonstration notice.** OPEN publishes no ratings yet, and engine output is labeled as demonstration ratings. Keep the announcement bar and the status section on Home.
+2. **Keep the status notice.** No OPEN rating is live. The engine is the reference implementation of the OPEN rating method, and its outputs are not OPEN ratings. Never say or imply that ratings are validated or live. Keep the announcement bar and the status section on Home, and match their wording to the engine's latest release.
 3. **Do not name competing rating systems.** Say "standard external rating system".
 4. **Check every claim against the repository it describes, on `main`.** Mark each step of how a match becomes a rating as implemented or planned.
 5. **Link decisions, do not copy them.** Link the backend's ADRs and `CONTEXT.md`, the rating spec, and each repository's guides. A one-sentence summary is fine.

@@ -6,12 +6,12 @@ OPEN, the Open Pickleball Evaluation Network, is a free, open-source, community-
 
 !!! warning "No OPEN rating is live"
 
-    OPEN publishes no ratings yet. The [reference engine](https://github.com/openpickleball/engine) is a demonstration: its methods have not been validated on real match data, and its output is labeled as demonstration ratings, not OPEN ratings. No official version of the [rating spec](https://github.com/openpickleball/rating-spec) exists yet.
+    OPEN publishes no ratings yet. The [rating engine](https://github.com/openpickleball/engine) is the reference implementation of the OPEN rating method. Its outputs are not OPEN ratings, and it must not be used to rate real players. It was evaluated on one club's closed pool, and a forthcoming report describes that evaluation. Ratings from pools that share no players are not comparable, and the engine's parameters are retuned on a published schedule. No official version of the [rating spec](https://github.com/openpickleball/rating-spec) exists yet.
 
 What exists today:
 
 - The **backend** stores accounts, players, clubs, organizers, events, and matches. It validates match submissions, detects duplicates, and runs the confirmation and dispute workflow. It does not call the engine yet, and it serves no ratings.
-- The **engine** computes and replays ratings as a Python package, with a dev release on TestPyPI only.
+- The **engine** computes and replays ratings as a Python package. Version 1.0.0 is on PyPI: install it with `pip install openpickleball-engine`, and load the published parameter set `v1` with `Config.published("v1")`. `v1` is not shown to predict better than the `Config()` defaults, which remain placeholders. Its outputs are still not OPEN ratings.
 - The **frontend** serves a static teaser at [openpb.org](https://openpb.org). The full web app is in development and not deployed.
 
 Testing the engine on real match results in shadow mode, so that no one relies on its ratings yet, is a current priority on the roadmap. The [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) lists what must happen before ratings go live, including a seated governing board and published validation results.

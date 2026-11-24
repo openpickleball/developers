@@ -22,6 +22,7 @@ Engine 1.0.0 is published (PyPI `openpickleball-engine==1.0.0`, tag `v1.0.0` at 
 - `overrides/main.html`: announcement bar text.
 - `docs/index.md`: status box and the engine bullet under "What exists today".
 - `docs/architecture.md`: last sentence of the Engine section.
+- `docs/stack.md`: the engine's Releases row, which still says TestPyPI only.
 - `docs/match-to-rating.md`: the diagram label under "ratings", the Ratings API paragraph, and the Evaluation section's status line.
 - `CLAUDE.md`, `CONTRIBUTING.md`: the notice rule.
 
@@ -39,7 +40,7 @@ Engine 1.0.0 is published (PyPI `openpickleball-engine==1.0.0`, tag `v1.0.0` at 
 
 ## Proof
 
-- Criterion 1: `grep -rni demonstrat docs overrides README.md` prints nothing after the change. On `main` (`13775b0`) it prints 8 lines across README.md, overrides/main.html, docs/index.md, docs/architecture.md, and docs/match-to-rating.md.
+- Criterion 1: `grep -rni demonstrat docs overrides README.md` prints nothing after the change. On `main` (`13775b0`) it prints 6 lines across README.md, overrides/main.html, docs/index.md, docs/architecture.md, and docs/match-to-rating.md.
 - Criteria 2 to 6: read the diff; `grep -rniE "validated|TestPyPI" docs` shows no claim that ratings are validated.
 - Criterion 7: `uv run mkdocs build --strict` output.
 - Live drive: build the site and grep the rendered HTML in `site/` for the new announcement text on every page.

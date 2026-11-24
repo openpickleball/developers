@@ -18,7 +18,7 @@ The short version: the backend takes, checks, and confirms matches today, and ke
            live update (provisional, planned)                   replay with provenance (planned in backend)
                           |                                                        |
                           +------------------------> ratings <---------------------+
-                                           (demonstration only, served by an API that is planned)
+                               (not OPEN ratings, served by an API that is planned)
 ```
 
 ## 1. Submission
@@ -104,7 +104,7 @@ Authoritative ratings come from a deterministic replay: the engine rebuilds ever
 
 **Planned** in the backend.
 
-A ratings API will let any app read ratings and rating history for free ([backend#53](https://github.com/openpickleball/backend/issues/53)). Stats are planned separately ([backend#55](https://github.com/openpickleball/backend/issues/55), [#56](https://github.com/openpickleball/backend/issues/56), [#57](https://github.com/openpickleball/backend/issues/57)). While the engine is a demonstration, its output is labeled as demonstration ratings. Ratings go live only after the steps in the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md), including published validation results and a seated governing board.
+A ratings API will let any app read ratings and rating history for free ([backend#53](https://github.com/openpickleball/backend/issues/53)). Stats are planned separately ([backend#55](https://github.com/openpickleball/backend/issues/55), [#56](https://github.com/openpickleball/backend/issues/56), [#57](https://github.com/openpickleball/backend/issues/57)). The engine is the reference implementation of the OPEN rating method, and its outputs are not OPEN ratings. No OPEN rating is live. Ratings go live only after the steps in the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md), including published validation results and a seated governing board.
 
 ## Starting ratings
 
@@ -122,9 +122,9 @@ A rating is **established** when its reliability is at least 60 and the player h
 
 ## Evaluation
 
-**Implemented** in the engine: the tools. **Planned**: running them on real match results and publishing what they show.
+**Implemented** in the engine: the tools. **Planned**: publishing the evaluation, and testing the engine on real match results in shadow mode.
 
-The engine predicts each match from ratings that have not seen it yet, then scores those predictions for error and calibration. It also fits the expectation scale and the win probability calibration, and says when the data do not pin a value down. See [evaluation and calibration](https://github.com/openpickleball/engine/blob/main/docs/model.md#evaluation-and-calibration). No evaluation of real match results is published yet. Testing the engine on real results in shadow mode, and publishing the validation results, are steps on the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) before any rating goes live ([engine#49](https://github.com/openpickleball/engine/issues/49)).
+The engine predicts each match from ratings that have not seen it yet, then scores those predictions for error and calibration. It also fits the expectation scale and the win probability calibration, and says when the data do not pin a value down. See [evaluation and calibration](https://github.com/openpickleball/engine/blob/main/docs/model.md#evaluation-and-calibration). The engine was evaluated on one club's closed pool, and a forthcoming report describes that evaluation. It is not published yet. Testing the engine on real results in shadow mode, and publishing the validation results, are steps on the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) before any rating goes live ([engine#49](https://github.com/openpickleball/engine/issues/49)).
 
 ## Closed groups
 
