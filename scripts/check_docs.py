@@ -19,13 +19,20 @@ from urllib.parse import unquote
 
 import yaml
 
-FENCE_OPEN = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
+# Any indentation: superfences allows fences nested in admonitions and lists.
+FENCE_OPEN = re.compile(r"^[ \t]*(`{3,}|~{3,})(.*)$")
 BLANK_LINE = re.compile(r"(\n[ \t]*\n)")
 URL_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 ASCII_PUNCTUATION = set("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
 LINK_TARGETS = (
     re.compile(r"\]\(\s*(?:<([^>\n]*)>|([^)\s]*))"),
-    re.compile(r"^ {0,3}\[[^\]\n]+\]:[ \t]*(?:<([^>\n]*)>|(\S+))", re.MULTILINE),
+    # A reference definition: a label not starting with ^, one target, an
+    # optional title, and nothing else on the line.
+    re.compile(
+        r"^ {0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(?:<([^>\n]*)>|(\S+))"
+        r"(?:[ \t]+(?:\"[^\"\n]*\"|'[^'\n]*'|\([^)\n]*\)))?[ \t]*$",
+        re.MULTILINE,
+    ),
     re.compile(
         r"\b(?:href|src)\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s\"'>]+))",
         re.IGNORECASE,
