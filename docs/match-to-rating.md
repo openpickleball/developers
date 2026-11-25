@@ -147,7 +147,7 @@ Each guard below is marked like the steps above. None of them costs a player any
 **Losing on purpose to enter a lower division.** **Planned** in the backend.
 
 - An Event will be able to set division eligibility by a player's highest authoritative rating over a recent window, such as 6 or 12 months, instead of their current rating. Lowering a rating before an event then stops paying off ([backend#174](https://github.com/openpickleball/backend/issues/174)).
-- A player whose results run far above expectation in self-reported or recreational play and far below it in tournament or league play will be flagged for moderator review. The expectations come from the engine's out-of-sample predictions, and the flag rules will be published. A flag never changes a rating by itself ([backend#175](https://github.com/openpickleball/backend/issues/175)).
+- A player whose results run far above expectation in self-reported or recreational play and far below it in tournament or league play will be flagged for organizers, in their flag feed. The expectations come from the engine's out-of-sample predictions, and the flag rules will be published. A flag never changes a rating by itself ([backend#175](https://github.com/openpickleball/backend/issues/175)).
 - A player whose results run far from their seed will be flagged for review too ([backend#51](https://github.com/openpickleball/backend/issues/51)).
 
 The engine does not cap how far one match can move a rating, beyond the 2.0 to 8.0 range. **Planned**: a cap on the rating a team can lose to one lopsided match, off by default until it is backtested ([engine#163](https://github.com/openpickleball/engine/issues/163)).
