@@ -305,3 +305,56 @@ def test_relative_links_to_existing_files_pass(tmp_path: Path) -> None:
     config = make_project(tmp_path, nav, pages)
     result = run_check(config)
     assert result.code == 0, result.stderr
+
+
+@pytest.mark.parametrize(
+    "page",
+    [
+        "# Home\n\n!!! example\n\n    ```md\n    [a](other.md)\n\n    [b](stack/)\n    ```\n",
+        "# Home\n\n- Item\n\n    ~~~~\n    [a](/stack/)\n    ~~~~\n",
+    ],
+    ids=["admonition", "list-item"],
+)
+def test_indented_fences_are_ignored(tmp_path: Path, basic_nav: str, page: str) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 0, result.stderr
+
+
+def test_link_after_indented_fence_is_checked(tmp_path: Path, basic_nav: str) -> None:
+    page = "# Home\n\n!!! note\n\n    ```\n    [a](/x/)\n    ```\n\n[b](/stack/)\n"
+    config = make_project(tmp_path, basic_nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 1
+    assert "index.md:9:" in result.stderr
+    assert "index.md:6:" not in result.stderr
+
+
+@pytest.mark.parametrize(
+    "line",
+    ["[Note]: this line is prose.", "[^1]: A footnote body."],
+    ids=["prose", "footnote"],
+)
+def test_prose_after_label_is_not_a_reference_definition(
+    tmp_path: Path, basic_nav: str, line: str
+) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(f"# Home\n\n{line}\n"))
+    result = run_check(config)
+    assert result.code == 0, result.stderr
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        '[x]: files/missing.pdf "Title"',
+        "[x]: files/missing.pdf 'Title'",
+        "[x]: files/missing.pdf (Title)",
+    ],
+)
+def test_reference_definition_with_title_is_checked(
+    tmp_path: Path, basic_nav: str, line: str
+) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(f"# Home\n\n{line}\n"))
+    result = run_check(config)
+    assert result.code == 1
+    assert "link target files/missing.pdf does not exist" in result.stderr
