@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 812" role="img" aria-labelledby="arch-title arch-desc">
+  <title id="arch-title">How the pieces of OPEN fit together</title>
+  <desc id="arch-desc">Players and organizers in a browser use the Frontend web app (frontend repo, planned). Partners (apps, league platforms, clubs, tournaments) use Partner integrations: OAuth2 tokens, with the API planned. The Frontend web app calls the backend at /api/v1/ and /_allauth/. Partner integrations call the backend at /oauth/ and /api/v1/. The Backend (Django) holds the API at /api/v1/, accounts at /_allauth/, and the admin; the match ledger, confirmation workflow, and audit log; and Celery workers and beat with the default, ratings, email, and webhooks queues. Inside the backend sits the Engine (Python package), for replay and live updates; it is imported in-process, which is planned. The backend uses three services: Postgres (ledger and all records), Valkey (cache and Celery broker), and an Email provider (Resend). Three notes follow. Rating spec (rating-spec repository): the official definition of the math. The engine implements a spec version, identified by its config version and config fingerprint. openpb.org: a static teaser from the frontend repository on GitHub Pages. It is live and calls no backend. Status page (status.openpb.org, planned): checks the backend from outside, so it stays up when the backend is down. Solid outlines and lines are implemented; dashed ones are planned.</desc>
+  <defs>
+    <marker id="arch-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="od-head" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+  </defs>
+  <text class="od-text" x="190" y="22" text-anchor="middle">Players and organizers</text>
+  <text class="od-text" x="190" y="40" text-anchor="middle">in a browser</text>
+  <text class="od-text" x="570" y="22" text-anchor="middle">Partners (apps, league platforms,</text>
+  <text class="od-text" x="570" y="40" text-anchor="middle">clubs, tournaments)</text>
+  <line class="od-line" x1="190" y1="50" x2="190" y2="82" marker-end="url(#arch-arrow)"/>
+  <line class="od-line" x1="570" y1="50" x2="570" y2="82" marker-end="url(#arch-arrow)"/>
+  <rect class="od-box od-planned" x="60" y="84" width="260" height="74" rx="8"/>
+  <text class="od-name" x="190" y="115" text-anchor="middle">Frontend web app</text>
+  <text class="od-text" x="190" y="137" text-anchor="middle">(frontend repo, planned)</text>
+  <rect class="od-box" x="440" y="84" width="260" height="74" rx="8"/>
+  <text class="od-name" x="570" y="107" text-anchor="middle">Partner integrations</text>
+  <text class="od-text" x="570" y="127" text-anchor="middle">OAuth2 tokens</text>
+  <text class="od-text" x="570" y="145" text-anchor="middle">(API planned)</text>
+  <line class="od-line" x1="190" y1="158" x2="190" y2="212" marker-end="url(#arch-arrow)"/>
+  <text class="od-label" x="202" y="190">/api/v1/ and /_allauth/</text>
+  <line class="od-line" x1="570" y1="158" x2="570" y2="212" marker-end="url(#arch-arrow)"/>
+  <text class="od-label" x="582" y="190">/oauth/ and /api/v1/</text>
+  <rect class="od-box od-group" x="20" y="214" width="720" height="214" rx="10"/>
+  <text class="od-name" x="40" y="242">Backend (Django)</text>
+  <text class="od-text" x="40" y="268">API at /api/v1/</text>
+  <text class="od-text" x="168" y="268">accounts at /_allauth/</text>
+  <text class="od-text" x="320" y="268">admin</text>
+  <text class="od-text" x="40" y="290">match ledger, confirmation workflow, audit log</text>
+  <text class="od-text" x="40" y="312">Celery workers and beat: default, ratings, email, webhooks queues</text>
+  <line class="od-line od-planned" x1="170" y1="324" x2="170" y2="352" marker-end="url(#arch-arrow)"/>
+  <text class="od-label" x="182" y="343">imported in-process, planned</text>
+  <rect class="od-box od-inner" x="40" y="354" width="280" height="56" rx="8"/>
+  <text class="od-name" x="180" y="377" text-anchor="middle">Engine (Python package),</text>
+  <text class="od-text" x="180" y="397" text-anchor="middle">replay and live updates</text>
+  <line class="od-line" x1="130" y1="428" x2="130" y2="466" marker-end="url(#arch-arrow)"/>
+  <line class="od-line" x1="380" y1="428" x2="380" y2="466" marker-end="url(#arch-arrow)"/>
+  <line class="od-line" x1="630" y1="428" x2="630" y2="466" marker-end="url(#arch-arrow)"/>
+  <rect class="od-box" x="30" y="468" width="200" height="58" rx="8"/>
+  <text class="od-name" x="130" y="492" text-anchor="middle">Postgres</text>
+  <text class="od-text" x="130" y="512" text-anchor="middle">(ledger and all records)</text>
+  <rect class="od-box" x="280" y="468" width="200" height="58" rx="8"/>
+  <text class="od-name" x="380" y="492" text-anchor="middle">Valkey</text>
+  <text class="od-text" x="380" y="512" text-anchor="middle">(cache and Celery broker)</text>
+  <rect class="od-box" x="530" y="468" width="200" height="58" rx="8"/>
+  <text class="od-name" x="630" y="492" text-anchor="middle">Email provider</text>
+  <text class="od-text" x="630" y="512" text-anchor="middle">(Resend)</text>
+  <rect class="od-box od-note" x="20" y="562" width="720" height="58" rx="8"/>
+  <text class="od-text" x="36" y="587"><tspan class="od-strong">Rating spec</tspan> (rating-spec repository): the official definition of the math.</text>
+  <text class="od-text" x="36" y="607">The engine implements a spec version, identified by its config version and config fingerprint.</text>
+  <rect class="od-box od-note" x="20" y="634" width="720" height="58" rx="8"/>
+  <text class="od-text" x="36" y="659"><tspan class="od-strong">openpb.org</tspan>: a static teaser from the frontend repository on GitHub Pages.</text>
+  <text class="od-text" x="36" y="679">It is live and calls no backend.</text>
+  <rect class="od-box od-note od-planned" x="20" y="706" width="720" height="58" rx="8"/>
+  <text class="od-text" x="36" y="731"><tspan class="od-strong">Status page</tspan> (status.openpb.org, planned): checks the backend from outside,</text>
+  <text class="od-text" x="36" y="751">so it stays up when the backend is down.</text>
+  <line class="od-line" x1="20" y1="796" x2="52" y2="796"/>
+  <text class="od-label" x="60" y="800">implemented</text>
+  <line class="od-line od-planned" x1="160" y1="796" x2="192" y2="796"/>
+  <text class="od-label" x="200" y="800">planned</text>
+</svg>

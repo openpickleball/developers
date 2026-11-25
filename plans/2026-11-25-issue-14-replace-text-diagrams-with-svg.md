@@ -20,7 +20,7 @@ Domain skills:
 6. Every label keeps the current wording from the ASCII diagrams, including the three notes under the architecture diagram (rating spec, openpb.org, status page) and the "(not OPEN ratings, served by an API that is planned)" line. No claim is added, removed, or strengthened.
 7. Each `<svg>` has `role="img"`, `aria-labelledby` pointing to a `<title>` and a `<desc>`. The `<desc>` states in prose every box and connection the diagram shows, including what is planned, so a screen reader gets the same content. Element ids are unique across the site (prefix them `arch-` and `m2r-`).
 8. On a narrow screen the diagram scrolls sideways inside its figure instead of shrinking text below legibility. The figure wrapper has `overflow-x: auto`, and the SVG has a `min-width` (about 640px).
-9. `tests/test_diagrams.py` checks each file in `diagrams/`: it parses as XML, has the role, title, and desc from criterion 7, and contains none of the forbidden constructs from criterion 3. It also checks each file is referenced by a page under `docs/`.
+9. `tests/test_diagrams.py` checks each file in `diagrams/`: it parses as XML, has the role, title, and desc from criterion 7, and contains none of the forbidden constructs from criterion 3. It also checks each file is referenced by a page under `docs/`. It also checks that ids carry the `arch-` or `m2r-` prefix and are unique, that the SVG files have no blank lines, and that `docs/stylesheets/diagrams.css` has none of the forbidden constructs from criterion 3. (Added while writing the test, so criteria 3 and 7 and the blank-line risk are covered by a test, not only by review.)
 10. The gate passes: `uv sync --locked`, `uv run pytest`, `uv run python scripts/check_docs.py`, `uv run zensical build --strict`.
 
 ## Files that change
@@ -46,6 +46,7 @@ Domain skills:
 - Duplicate `id`s across the two diagrams break `aria-labelledby` and markers. Use the prefixes.
 - `check_docs.py` only checks `href` and `src` for absolute links. The new test covers `xlink:href` and CSS `url()` for the SVG files.
 - An arrow marker whose fill does not follow the theme. Use `fill: context-stroke` or style the marker path through `diagrams.css`.
+- `zensical serve` does not watch `diagrams/`. After editing an SVG, change the page that includes it (or restart the server) to see the edit. Found during the live drive.
 - Not chosen: separate `<img>` SVG files (they cannot follow the theme toggle), Mermaid (hard rule 6), and raster images (they cannot follow the theme and do not scale).
 
 ## Proof
