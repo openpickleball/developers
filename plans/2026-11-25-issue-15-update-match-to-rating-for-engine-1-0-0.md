@@ -55,6 +55,11 @@ All edits are in `docs/match-to-rating.md`. Use these wordings or close equivale
 
 - Step 6: the sentence after the list is scoped to anomaly flags and marked planned: "These anomaly flags are planned too. OPEN will show them to organizers and moderators, and never applies an automatic penalty for them: an anomaly flag does not change a rating or stop a match counting." It adds that a near duplicate flag is different and holds a match, linking `#4-duplicate-detection`. The suggested wording said "a flag does not ... stop a match counting", which contradicts step 4 of the page, where a near duplicate flag holds both matches. backend#206 and backend#213 are open, so the flags are not built yet.
 - Step 7: the intro says the README "lists what the engine does not catch" instead of "what engine 1.0.0 does not catch". The README says its findings come from a pre-1.0 build (0.3.0.dev0).
+- Step 1: "lowers K to match" is now "scales K by the fitted side-out scale (1.0 / 1.112)". PARAMETERS.md scales `k_min` and `k_max` by that factor, about a 10% cut. That cut does not offset the change in scale, and the README says `v1` moves ratings faster.
+- Step 6: the anomaly flag sentence now says OPEN will show the flags to organizers, and moderators will see each Organizer's flag counts. backend#213 makes organizers the audience, and backend#206 gives moderators only the counts.
+- Step 3: the Evaluation marker line uses no new "**Published**" marker, because the page legend defines only Implemented and Planned. It now reads "An initial evaluation is published."
+- Step 7, closed group bullet: "off by default" is now "off in `Config()` and in `v1`", as the README says.
+- Step 7, colluding accounts bullet: "Self-reported matches are limited by the repeat rule" is now "For self-reported matches, the repeat rule shrinks the gain but does not remove it". The README says the rule held the gain to about 0.4 under `v1` and 0.15 under `Config()`, "but a smaller gain is still a gain".
 
 ## Risks
 

@@ -86,7 +86,7 @@ The engine is an open-source Python package, `openpickleball-engine`, under AGPL
 - **Uncertainty.** Each rating carries a rating deviation (RD). Each player moves by their own K, which grows with their RD, so a new or returning player moves faster than a settled one. RD shrinks with each counted match and grows with inactivity. Inactivity never moves the rating itself.
 - **Weight.** The match type sets how much a match counts. Under the current defaults: tournament 1.00, league 0.90, recreational verified 0.75, and self-reported 0.40. Longer games and more games add a little weight, up to a cap. These defaults are declared choices or uncalibrated placeholders, as the [parameter table](https://github.com/openpickleball/engine/blob/main/docs/model.md#parameters) marks each one.
 
-The engine also ships a published parameter set, `v1`, which a caller loads on purpose with `Config.published("v1")`. It is the first set fitted on match data. It declares a scale of 1.0 in place of the default 2.9, fits the side-out win calibration, and lowers K to match. On held-out matches it showed no measurable gain over the defaults, so `Config()` is unchanged. The evaluation's simulations also found that `v1` moves ratings faster, so losing on purpose and colluding accounts move ratings further under it. See [PARAMETERS.md](https://github.com/openpickleball/engine/blob/main/PARAMETERS.md).
+The engine also ships a published parameter set, `v1`, which a caller loads on purpose with `Config.published("v1")`. It is the first set fitted on match data. It declares a scale of 1.0 in place of the default 2.9, fits the side-out win calibration, and scales K by the fitted side-out scale (1.0 / 1.112). On held-out matches it showed no measurable gain over the defaults, so `Config()` is unchanged. The evaluation's simulations also found that `v1` moves ratings faster, so losing on purpose and colluding accounts move ratings further under it. See [PARAMETERS.md](https://github.com/openpickleball/engine/blob/main/PARAMETERS.md).
 
 Every result reports the expected share, the actual share, the difference, the weight, and each player's change, so any rating change can be explained from the match that caused it. A replay of the same ledger, seeds, config, and date always gives the same ratings, so any change can also be reproduced (see [Replay with provenance](#10-replay-with-provenance)). The engine can also predict a match before it is played, as an expected point share and a win probability. No app shows those predictions to players yet.
 
@@ -126,7 +126,7 @@ A rating is **established** when its reliability is at least 60 and the player h
 
 ## Evaluation
 
-**Implemented** in the engine: the tools. **Published**: an initial evaluation. **Planned**: a pre-registered test on later play, and testing the engine on real match results in shadow mode.
+**Implemented** in the engine: the tools. An initial evaluation is published. **Planned**: a pre-registered test on later play, and testing the engine on real match results in shadow mode.
 
 The engine predicts each match from ratings that have not seen it yet, then scores those predictions for error and calibration. It also fits the expectation scale and the win probability calibration, and says when the data do not pin a value down. See [evaluation and calibration](https://github.com/openpickleball/engine/blob/main/docs/model.md#evaluation-and-calibration). The [evaluation repository](https://github.com/openpickleball/evaluation) holds the methodology and results of an initial evaluation on one club's play. It was not pre-registered, so no result in it is confirmatory. A test on matches played after the evaluation, registered in advance, is still pending. The evaluation compares the engine with standard external rating systems. Testing the engine on real results in shadow mode, and publishing validation results, are steps on the [roadmap](https://github.com/openpickleball/.github/blob/main/ROADMAP.md) before any rating goes live.
 
@@ -160,7 +160,7 @@ The engine does not cap how far one match can move a rating, beyond the 2.0 to 8
 - Planned: detect rings of accounts that confirm each other's matches, for example a set of players whose matches are almost all against each other, from data OPEN already holds ([backend#209](https://github.com/openpickleball/backend/issues/209)).
 - Planned: flag unusual submissions from trusted submitters, such as an Organizer's first matches or a large batch ([backend#206](https://github.com/openpickleball/backend/issues/206)), and show anomaly flags to organizers ([backend#213](https://github.com/openpickleball/backend/issues/213)).
 
-These anomaly flags are planned too. OPEN will show them to organizers and moderators, and never applies an automatic penalty for them: an anomaly flag does not change a rating or stop a match counting. (A near duplicate flag is different: it holds a match, as [Duplicate detection](#4-duplicate-detection) says.)
+These anomaly flags are planned too. OPEN will show them to organizers, and moderators will see each Organizer's flag counts. OPEN never applies an automatic penalty for them: an anomaly flag does not change a rating or stop a match counting. (A near duplicate flag is different: it holds a match, as [Duplicate detection](#4-duplicate-detection) says.)
 
 ### Known limitations
 
@@ -168,5 +168,5 @@ The guards above do not stop every way to game a rating. The engine README's [Kn
 
 - **Regular partners end up with the same rating.** Two players who always play together get the same updates, so the engine cannot tell who carries whom.
 - **Losing on purpose is not detected.** A thrown match lowers the rating, and nothing in the rating's uncertainty or reliability shows it.
-- **Made-up league matches between colluding accounts count without limit.** Only Organizer verification stands in the way. Self-reported matches are limited by the repeat rule.
-- **A closed group can be labeled established.** The connectivity cap meant for this is off by default (see [Closed groups](#closed-groups)).
+- **Made-up league matches between colluding accounts count without limit.** Only Organizer verification stands in the way. For self-reported matches, the repeat rule shrinks the gain but does not remove it.
+- **A closed group can be labeled established.** The connectivity cap meant for this is off in `Config()` and in `v1` (see [Closed groups](#closed-groups)).
