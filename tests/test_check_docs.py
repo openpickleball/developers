@@ -446,3 +446,12 @@ def test_stray_raw_code_tags_do_not_hide_later_links(
     assert result.code == 1
     for line in expected:
         assert line in result.stderr
+
+
+def test_repository_pages_pass_from_another_directory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    result = run_check(REPO_ROOT / "mkdocs.yml")
+    assert result.code == 0, result.stderr
+    assert result.stderr == ""
