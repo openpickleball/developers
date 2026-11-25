@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 432" role="img" aria-labelledby="m2r-title m2r-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 432" role="img" aria-labelledby="m2r-title" aria-describedby="m2r-desc">
   <title id="m2r-title">How a match becomes a rating</title>
   <desc id="m2r-desc">A match moves through five steps in order: submit, permission, validate, duplicates, and confirm or dispute. A confirmed match goes into the append-only ledger of counted matches. From the ledger two planned paths lead to ratings: live update (provisional, planned) and replay with provenance (planned in backend). Both lead to ratings, which are not OPEN ratings and are served by an API that is planned. Solid outlines and lines are implemented; dashed ones are planned.</desc>
   <defs>

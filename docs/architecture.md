@@ -4,7 +4,7 @@ OPEN is split into a few repositories, each with one job. The backend stores the
 
 ## How the pieces fit together
 
-<figure class="open-diagram">
+<figure class="open-diagram" tabindex="0" aria-label="Architecture diagram">
 --8<-- "architecture.svg"
 </figure>
 

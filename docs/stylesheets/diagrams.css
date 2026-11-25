@@ -9,6 +9,10 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
+.md-typeset figure.open-diagram:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
 .open-diagram svg {
   display: block;
   width: 100%;

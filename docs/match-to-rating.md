@@ -7,7 +7,7 @@ A match passes through several steps before it can move a rating. Each step belo
 
 The short version: the backend takes, checks, and confirms matches today, and keeps them in an append-only ledger. The engine can replay a ledger into ratings today. Connecting the two, and serving ratings, is planned. No OPEN rating is published.
 
-<figure class="open-diagram">
+<figure class="open-diagram" tabindex="0" aria-label="How a match becomes a rating diagram">
 --8<-- "match-to-rating.svg"
 </figure>
 
