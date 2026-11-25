@@ -30,6 +30,7 @@ Domain skills:
 - `mkdocs.yml`: `pymdownx.snippets` under `markdown_extensions` (after `pymdownx.superfences`), and `extra_css: [stylesheets/diagrams.css]`.
 - `docs/architecture.md`, `docs/match-to-rating.md`: the code blocks become a `<figure class="open-diagram">` holding `--8<-- "<name>.svg"`. There are no blank lines inside the figure.
 - `tests/test_diagrams.py`: new. The forbidden-construct checker lives in `tests/diagram_rules.py`, with its own unit test in `tests/test_diagram_rules.py`.
+- `tests/test_diagram_planned_links.py`, `tests/test_diagram_partner_arrows.py`: new, added in review to hold criterion 5's connection rules (a connection touching a planned box is planned, and the partner link is split). They do not check every planned label; the live drive covers the rest of criterion 5.
 - `scripts/check_docs.py`: `Renderer.from_config` resolves each relative `pymdownx.snippets` `base_path` against the config file's folder, because snippets resolves it against the current directory and the check must keep working from any directory. `tests/test_check_docs.py` gets a test that runs the check from another directory.
 - Phase 8 may touch `CLAUDE.md` and `CONTRIBUTING.md` (repository layout, how to edit a diagram).
 
@@ -39,6 +40,7 @@ Domain skills:
 2. Write `tests/test_diagrams.py` and run it red (no `diagrams/` files yet). Commit the test.
 3. Add the snippets and `extra_css` config, the stylesheet, and both SVGs. Replace both code blocks. Run the gate. Commit.
 4. Live drive with `uv run zensical serve`: both pages in light mode, dark mode, and at about 375px wide. Capture screenshots as evidence.
+5. Review fixes: one red test commit per defect, then its fix, then a rerun of the gate and the live drive.
 
 ## Risks
 
