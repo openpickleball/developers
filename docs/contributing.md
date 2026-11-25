@@ -29,7 +29,7 @@ Everyone is welcome. You don't need to write code: players, organizers, platform
 
 ## This site
 
-[openpickleball/developers](https://github.com/openpickleball/developers): read its [contributing guide](https://github.com/openpickleball/developers/blob/main/CONTRIBUTING.md). Preview it with `uv run mkdocs serve`.
+[openpickleball/developers](https://github.com/openpickleball/developers): read its [contributing guide](https://github.com/openpickleball/developers/blob/main/CONTRIBUTING.md). Preview it with `uv run zensical serve`. CI runs its tests, `scripts/check_docs.py`, and `uv run zensical build --strict` on every pull request.
 
 ## Organization files
 

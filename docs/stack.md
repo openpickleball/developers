@@ -50,4 +50,4 @@ Each repository picks its own tools. This page lists them and gives the reason, 
 
 ## This site
 
-[openpickleball/developers](https://github.com/openpickleball/developers). MkDocs with the Material theme, pinned with uv, built and deployed to GitHub Pages by a workflow. It loads no fonts, scripts, or images from another host.
+[openpickleball/developers](https://github.com/openpickleball/developers). Zensical with its classic theme, pinned with uv, built and deployed to GitHub Pages by a workflow. It loads no fonts, scripts, or images from another host.

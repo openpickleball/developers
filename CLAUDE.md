@@ -4,13 +4,14 @@ This file gives Claude Code guidance for working in this repository.
 
 ## What this repository is
 
-The developer site for OPEN, the Open Pickleball Evaluation Network, served at [dev.openpb.org](https://dev.openpb.org). It explains how OPEN works for a technical audience: the architecture, the tech stack, and how a match becomes a rating. It is a static MkDocs site built with Material for MkDocs and deployed to GitHub Pages. It holds no application code.
+The developer site for OPEN, the Open Pickleball Evaluation Network, served at [dev.openpb.org](https://dev.openpb.org). It explains how OPEN works for a technical audience: the architecture, the tech stack, and how a match becomes a rating. It is a static site built with [Zensical](https://zensical.org), using its `classic` theme variant, and deployed to GitHub Pages. It holds no application code.
 
 - `docs/`: the site's pages. Every page is listed in `nav` in `mkdocs.yml`.
 - `overrides/main.html`: the theme override that shows the site-wide status notice.
-- `mkdocs.yml`: site configuration. `validation` turns broken links and anchors into warnings, which `--strict` fails on.
+- `mkdocs.yml`: site configuration, which Zensical reads. `validation` makes `--strict` fail on links to missing pages and missing anchors.
+- `scripts/check_docs.py`: fails on a page missing from `nav`, a `nav` entry for a missing file, or an absolute link. CI runs it before the build. Its tests are in `tests/`.
 - `plans/`: plans recorded for issues before their work lands, named `YYYY-MM-DD-issue-<N>-<slug>.md`. They live outside `docs/` so the site does not publish them.
-- `.github/workflows/pages.yml`: the strict build on every pull request, and the deploy to Pages on a push to `main`.
+- `.github/workflows/pages.yml`: the tests, the check script, and the strict build on every pull request, and the deploy to Pages on a push to `main`.
 - `.github/workflows/dco.yml`: the `sign-off` check on pull requests.
 - `.github/workflows/scorecard.yml`: OpenSSF Scorecard.
 
@@ -18,8 +19,10 @@ The developer site for OPEN, the Open Pickleball Evaluation Network, served at [
 
 ```bash
 uv sync
-uv run mkdocs serve            # preview at http://127.0.0.1:8000
-uv run mkdocs build --strict   # the same build CI runs
+uv run zensical serve                # preview at http://localhost:8000
+uv run pytest                        # tests for the check script
+uv run python scripts/check_docs.py  # nav coverage and absolute links
+uv run zensical build --strict       # the same build CI runs
 ```
 
 Dependencies are pinned in `pyproject.toml` and locked in `uv.lock`. CI runs `uv sync --locked`, so update the lock with `uv lock` whenever `pyproject.toml` changes. GitHub Actions are pinned by commit SHA with the version in a comment; keep that form when Dependabot or a contributor bumps one.

@@ -4,20 +4,22 @@ This guide adds to the [organization contributing guide](https://github.com/open
 
 ## Preview locally
 
-You need [uv](https://docs.astral.sh/uv/getting-started/installation/). It installs Python 3.13 and the pinned MkDocs packages for you.
+You need [uv](https://docs.astral.sh/uv/getting-started/installation/). It installs Python 3.13 and the pinned [Zensical](https://zensical.org) packages for you.
 
 ```bash
 uv sync
-uv run mkdocs serve
+uv run zensical serve
 ```
 
-The site is then at http://127.0.0.1:8000. Before you open a pull request, run the same strict build CI runs:
+The site is then at http://localhost:8000. Before you open a pull request, run the same checks CI runs, in the same order:
 
 ```bash
-uv run mkdocs build --strict
+uv run pytest
+uv run python scripts/check_docs.py
+uv run zensical build --strict
 ```
 
-A strict build fails on a broken internal link or a page missing from the navigation.
+The strict build fails on a link to a missing page or a missing anchor. The check script, `scripts/check_docs.py`, fails on a page missing from the navigation, a navigation entry for a missing file, or an absolute link such as `/stack/`. CI runs it next to the build.
 
 ## Writing the site
 
@@ -39,4 +41,4 @@ Every commit needs a [DCO](https://developercertificate.org/) sign-off: `git com
 
 ## Deploys
 
-Every pull request runs the strict build. A merge to `main` builds the site and deploys it to GitHub Pages at [dev.openpb.org](https://dev.openpb.org).
+Every pull request runs the tests, the check script, and the strict build. A merge to `main` builds the site and deploys it to GitHub Pages at [dev.openpb.org](https://dev.openpb.org).
