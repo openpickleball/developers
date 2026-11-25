@@ -8,16 +8,19 @@ allowed.
 
 import re
 
-FORBIDDEN_PATTERNS = [
-    re.compile(r"\bhref\s*="),
-    re.compile(r"\bsrc\s*="),
-    re.compile(r"@import"),
-    re.compile(r"@font-face"),
-    re.compile(r"url\(\s*(?!#)"),
-    re.compile(r"<\s*(?:\w+:)?image\b"),
-    re.compile(r"<\s*(?:\w+:)?script\b"),
-    re.compile(r"<\s*(?:\w+:)?foreignObject\b"),
+PATTERNS = [
+    r"\bhref\s*=",
+    r"\bsrc\s*=",
+    r"\bsrcset\s*=",
+    r"@import",
+    r"@font-face",
+    r"url\((?!\s*#)",
+    r"image-set\(",
+    r"<\s*(?:\w+:)?(?:image|img|script|foreignObject|object|embed|iframe)\b",
 ]
+
+# HTML, SVG in HTML, and CSS keywords are case-insensitive.
+FORBIDDEN_PATTERNS = [re.compile(p, re.IGNORECASE) for p in PATTERNS]
 
 
 def forbidden(text: str) -> list[str]:

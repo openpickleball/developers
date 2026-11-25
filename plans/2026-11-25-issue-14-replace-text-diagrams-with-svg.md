@@ -12,7 +12,7 @@ Domain skills:
 
 1. `docs/architecture.md` ("How the pieces fit together") and `docs/match-to-rating.md` (the block after "The short version") show SVG diagrams instead of the ASCII `text` code blocks. `grep -n -- '+---' docs/*.md` prints nothing.
 2. Each SVG lives in its own file in a top-level `diagrams/` directory (`diagrams/architecture.svg`, `diagrams/match-to-rating.svg`). It is inlined into the page at build time by `pymdownx.snippets` (`base_path: [diagrams]`, `check_paths: true`), so a missing file fails both `zensical build --strict` and `scripts/check_docs.py`.
-3. The SVGs and their stylesheet load nothing from another host: no `href`, `xlink:href`, `src`, `@import`, `@font-face`, or `url(` other than `url(#...)`, and no `<image>`, `<script>`, or `<foreignObject>`.
+3. The SVGs and their stylesheet load nothing from another host: no `href`, `xlink:href`, `src`, `srcset`, `@import`, `@font-face`, `image-set(`, or `url(` other than `url(#...)`, and no `<image>`, `<img>`, `<script>`, `<foreignObject>`, `<object>`, `<embed>`, or `<iframe>`, in any letter case (HTML and CSS keywords are case-insensitive).
 4. Colors come from the theme's CSS variables (`--md-default-fg-color`, its `--light`/`--lighter`/`--lightest` variants, `--md-default-bg-color`, `--md-code-bg-color`, `--md-primary-fg-color`, `--md-accent-fg-color`) in a local stylesheet, `docs/stylesheets/diagrams.css`, added with `extra_css`. No color is hard-coded in the SVGs, so both palettes, including the manual toggle, restyle them. Text uses `font-family: inherit`.
 5. Implemented and planned parts look different: a box or arrow whose current label says "planned" has a dashed outline or line, and everything else is solid. Each diagram has a small legend (solid: implemented, dashed: planned).
    - Architecture, dashed: the Frontend web app box, the arrow into it from players and organizers and its `/api/v1/ and /_allauth/` arrow to the backend (a connection that touches a planned box is planned; `tests/test_diagram_planned_links.py` checks this), the engine's "imported in-process" link to the backend, and the Status page box. Partner integrations stays solid, because the OAuth2 token endpoints exist, and keeps its "(API planned)" label. Its link to the backend is two arrows: a solid one labeled `/oauth/` (the token endpoints exist) and a dashed one labeled `/api/v1/` (no API operation accepts a partner token yet). `tests/test_diagram_partner_arrows.py` checks this.
@@ -29,7 +29,7 @@ Domain skills:
 - `docs/stylesheets/diagrams.css`: new.
 - `mkdocs.yml`: `pymdownx.snippets` under `markdown_extensions` (after `pymdownx.superfences`), and `extra_css: [stylesheets/diagrams.css]`.
 - `docs/architecture.md`, `docs/match-to-rating.md`: the code blocks become a `<figure class="open-diagram">` holding `--8<-- "<name>.svg"`. There are no blank lines inside the figure.
-- `tests/test_diagrams.py`: new.
+- `tests/test_diagrams.py`: new. The forbidden-construct checker lives in `tests/diagram_rules.py`, with its own unit test in `tests/test_diagram_rules.py`.
 - `scripts/check_docs.py`: `Renderer.from_config` resolves each relative `pymdownx.snippets` `base_path` against the config file's folder, because snippets resolves it against the current directory and the check must keep working from any directory. `tests/test_check_docs.py` gets a test that runs the check from another directory.
 - Phase 8 may touch `CLAUDE.md` and `CONTRIBUTING.md` (repository layout, how to edit a diagram).
 
