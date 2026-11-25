@@ -4,40 +4,29 @@
 It reports a Markdown page under the docs directory that is missing from
 ``nav``, a ``nav`` entry that does not name a file under the docs directory,
 an absolute link such as ``/stack/``, a link to a directory such as
-``stack/``, and a relative link to a file that does not exist. Links in code
-blocks and code spans are ignored. It prints one line per problem to stderr
-and exits 1 if there are any problems, else 0.
+``stack/``, and a relative link to a file that does not exist. It finds links
+by rendering each page with Python-Markdown and the same extensions Zensical
+uses, so links in code are ignored exactly as the build ignores them. It
+prints one line per problem to stderr and exits 1 if there are any problems,
+else 0.
 """
 
 import argparse
 import re
 import sys
 from collections.abc import Iterator
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import unquote
 
+import markdown
 import yaml
+from zensical.config import parse_mkdocs_config
 
-# Any indentation: superfences allows fences nested in admonitions and lists.
-FENCE_OPEN = re.compile(r"^[ \t]*(`{3,}|~{3,})(.*)$")
-BLANK_LINE = re.compile(r"(\n[ \t]*\n)")
 URL_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
-ASCII_PUNCTUATION = set("!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~")
-LINK_TARGETS = (
-    re.compile(r"\]\(\s*(?:<([^>\n]*)>|([^)\s]*))"),
-    # A reference definition: a label not starting with ^, one target, an
-    # optional title, and nothing else on the line.
-    re.compile(
-        r"^ {0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(?:<([^>\n]*)>|(\S+))"
-        r"(?:[ \t]+(?:\"[^\"\n]*\"|'[^'\n]*'|\([^)\n]*\)))?[ \t]*$",
-        re.MULTILINE,
-    ),
-    re.compile(
-        r"\b(?:href|src)\s*=\s*(?:\"([^\"]*)\"|'([^']*)'|([^\s\"'>]+))",
-        re.IGNORECASE,
-    ),
-)
+CODE_TAGS = {"pre", "code"}
+LINK_ATTRIBUTES = {"href", "src"}
 
 
 @dataclass(frozen=True)
@@ -48,6 +37,53 @@ class Problem:
 
     def __str__(self) -> str:
         return f"{self.path}:{self.line}: {self.message}"
+
+
+@dataclass(frozen=True)
+class Renderer:
+    """Python-Markdown settings, built the way Zensical builds them."""
+
+    extensions: list[str]
+    configs: dict[str, dict[str, object]] = field(default_factory=dict)
+
+    @classmethod
+    def from_config(cls, config_path: Path) -> "Renderer":
+        config = parse_mkdocs_config(str(config_path))
+        return cls(config["markdown_extensions"], config["mdx_configs"])
+
+    def render(self, text: str) -> tuple[str, list[str]]:
+        """Return the page's HTML and every reference definition's target."""
+        md = markdown.Markdown(
+            extensions=self.extensions, extension_configs=self.configs
+        )
+        html = md.convert(text)
+        return html, [url for url, _title in md.references.values()]
+
+
+class LinkCollector(HTMLParser):
+    """Collect href and src values that are not inside pre or code."""
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.targets: list[str] = []
+        self.code_depth = 0
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag in CODE_TAGS:
+            self.code_depth += 1
+        if self.code_depth:
+            return
+        for name, value in attrs:
+            if name in LINK_ATTRIBUTES and value is not None:
+                self.targets.append(value)
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag not in CODE_TAGS:
+            self.handle_starttag(tag, attrs)
+
+    def handle_endtag(self, tag: str) -> None:
+        if tag in CODE_TAGS and self.code_depth:
+            self.code_depth -= 1
 
 
 def is_external(target: str) -> bool:
@@ -70,75 +106,25 @@ def nav_paths(entry: object) -> Iterator[str]:
                 yield from nav_paths(item)
 
 
-def blank(text: str) -> str:
-    """Replace every character but newlines with a space."""
-    return re.sub(r"[^\n]", " ", text)
+def link_targets(renderer: Renderer, text: str) -> list[str]:
+    """Return every link target the rendered page has outside code.
 
-
-def strip_fences(text: str) -> str:
-    """Blank out fenced code blocks, keeping line numbers."""
-    lines = text.split("\n")
-    fence: str | None = None
-    for index, line in enumerate(lines):
-        if fence is None:
-            opened = FENCE_OPEN.match(line)
-            # A backtick fence's info string may not contain a backtick.
-            if opened and not (opened.group(1)[0] == "`" and "`" in opened.group(2)):
-                fence = opened.group(1)
-                lines[index] = ""
-            continue
-        stripped = line.strip()
-        if stripped.startswith(fence) and set(stripped) == {fence[0]}:
-            fence = None
-        lines[index] = ""
-    return "\n".join(lines)
-
-
-def strip_spans(paragraph: str) -> str:
-    """Blank out the code spans in one paragraph."""
-    out = list(paragraph)
-    index = 0
-    while index < len(paragraph):
-        char = paragraph[index]
-        if char == "\\" and paragraph[index + 1 : index + 2] in ASCII_PUNCTUATION:
-            index += 2
-            continue
-        if char != "`":
-            index += 1
-            continue
-        run = index
-        while run < len(paragraph) and paragraph[run] == "`":
-            run += 1
-        opener = paragraph[index:run]
-        closer = re.compile(rf"(?<!`){opener}(?!`)")
-        match = closer.search(paragraph, run)
-        if match is None:
-            index = run
-            continue
-        out[index : match.end()] = blank(paragraph[index : match.end()])
-        index = match.end()
-    return "".join(out)
-
-
-def strip_code(text: str) -> str:
-    """Blank out fenced code blocks and code spans, keeping line numbers.
-
-    A code span never crosses a blank line, so spans are found one
-    paragraph at a time.
+    Reference definitions count even when no link uses them.
     """
-    parts = BLANK_LINE.split(strip_fences(text))
-    return "".join(
-        part if BLANK_LINE.fullmatch(part) else strip_spans(part) for part in parts
-    )
+    html, references = renderer.render(text)
+    collector = LinkCollector()
+    collector.feed(html)
+    collector.close()
+    return collector.targets + references
 
 
-def link_targets(text: str) -> Iterator[tuple[int, str]]:
-    """Yield the line and target of every link outside code."""
-    prose = strip_code(text)
-    for pattern in LINK_TARGETS:
-        for match in pattern.finditer(prose):
-            target = next(g for g in match.groups() if g is not None)
-            yield prose.count("\n", 0, match.start()) + 1, target
+def source_line(text: str, target: str) -> int:
+    """Return the first source line that contains the target, else 1."""
+    for candidate in (target, unquote(target)):
+        index = text.find(candidate)
+        if index >= 0:
+            return text.count("\n", 0, index) + 1
+    return 1
 
 
 def check_target(page: Path, docs_root: Path, target: str) -> str | None:
@@ -161,13 +147,14 @@ def check_target(page: Path, docs_root: Path, target: str) -> str | None:
 
 
 def link_problems(
-    label: str, page: Path, docs_root: Path, text: str
+    label: str, page: Path, docs_root: Path, renderer: Renderer
 ) -> Iterator[Problem]:
+    text = page.read_text()
     found: dict[tuple[int, str], None] = {}
-    for line, target in link_targets(text):
+    for target in link_targets(renderer, text):
         message = check_target(page, docs_root, target)
         if message is not None:
-            found[(line, message)] = None
+            found[(source_line(text, target), message)] = None
     for line, message in sorted(found):
         yield Problem(label, line, message)
 
@@ -177,6 +164,7 @@ def check(config_path: Path) -> list[Problem]:
     docs_name = config.get("docs_dir", "docs")
     docs_root = (config_path.parent / docs_name).resolve()
     config_name = config_path.name
+    renderer = Renderer.from_config(config_path)
     problems: list[Problem] = []
 
     listed: set[str] = set()
@@ -198,8 +186,7 @@ def check(config_path: Path) -> list[Problem]:
         label = f"{docs_name}/{page}"
         if page not in listed:
             problems.append(Problem(label, 1, "page is not in nav"))
-        path = docs_root / page
-        problems.extend(link_problems(label, path, docs_root, path.read_text()))
+        problems.extend(link_problems(label, docs_root / page, docs_root, renderer))
     return problems
 
 
