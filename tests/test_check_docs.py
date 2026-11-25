@@ -206,3 +206,102 @@ def test_docs_dir_from_config_is_used(tmp_path: Path, basic_nav: str) -> None:
 def test_repository_pages_pass() -> None:
     result = run_check(REPO_ROOT / "mkdocs.yml")
     assert result.code == 0, result.stderr
+
+
+def two_pages(text: str) -> dict[str, str]:
+    return {"index.md": text, "stack.md": "# Stack\n"}
+
+
+@pytest.mark.parametrize(
+    "page",
+    [
+        "Use a ` here.\n\n[x](/stack/)\n\nAnd ` again.\n",
+        "a \\` b [x](/stack/) c \\` d\n",
+        "```code``` is inline.\n\n[x](/stack/)\n",
+    ],
+    ids=["span-across-blank-line", "escaped-backticks", "inline-triple-backticks"],
+)
+def test_backticks_that_are_not_code_do_not_hide_links(
+    tmp_path: Path, basic_nav: str, page: str
+) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 1
+    assert "absolute" in result.stderr
+
+
+@pytest.mark.parametrize("entry", ["../mkdocs.yml", "/etc/hostname"])
+def test_nav_entry_outside_docs_fails(tmp_path: Path, entry: str) -> None:
+    nav = f"nav:\n  - Home: index.md\n  - R: {entry}\n"
+    config = make_project(tmp_path, nav, {"index.md": "# Home\n"})
+    result = run_check(config)
+    assert result.code == 1
+    assert entry in result.stderr
+
+
+def test_nav_entry_with_non_http_scheme_is_external(tmp_path: Path) -> None:
+    nav = "nav:\n  - Home: index.md\n  - Mail: mailto:a@example.org\n"
+    config = make_project(tmp_path, nav, {"index.md": "# Home\n"})
+    result = run_check(config)
+    assert result.code == 0, result.stderr
+
+
+def test_nav_paths_are_normalized(tmp_path: Path) -> None:
+    nav = "nav:\n  - Home: ./index.md\n"
+    config = make_project(tmp_path, nav, {"index.md": "# Home\n"})
+    result = run_check(config)
+    assert result.code == 0, result.stderr
+
+
+@pytest.mark.parametrize(
+    "line",
+    [
+        "See [stack](stack/).",
+        "[stack]: stack/",
+        '<a href="stack/">stack</a>',
+    ],
+)
+def test_directory_link_fails(tmp_path: Path, basic_nav: str, line: str) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(f"# Home\n\n{line}\n"))
+    result = run_check(config)
+    assert result.code == 1
+    assert "index.md:3:" in result.stderr
+    assert "stack/ does not name a file" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("line", "target"),
+    [
+        ("![x](missing.png)", "missing.png"),
+        ("See [x](files/missing.pdf).", "files/missing.pdf"),
+        ("[x]: files/missing.pdf", "files/missing.pdf"),
+        ('<img src="missing.png" alt="x">', "missing.png"),
+        ("See [x](../mkdocs.yml).", "../mkdocs.yml"),
+    ],
+)
+def test_link_to_missing_file_fails(
+    tmp_path: Path, basic_nav: str, line: str, target: str
+) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(f"# Home\n\n{line}\n"))
+    result = run_check(config)
+    assert result.code == 1
+    assert "index.md:3:" in result.stderr
+    assert f"link target {target} does not exist" in result.stderr
+
+
+def test_relative_links_to_existing_files_pass(tmp_path: Path) -> None:
+    nav = "nav:\n  - Home: index.md\n  - Stack: stack.md\n  - Deep: sub/deep.md\n"
+    pages = {
+        "index.md": (
+            "# Home\n\n"
+            "[a](stack.md#part) [b](stack.md?x=1) [c](#local) ![d](img/logo.png)\n"
+            '<img src="img/logo.png" alt="d"> [e](mailto:a@example.org)\n'
+            "[ref]: sub/deep.md\n"
+        ),
+        "stack.md": "# Stack\n",
+        "sub/deep.md": "# Deep\n\n[home](../index.md) ![d](../img/logo.png)\n",
+        "img/logo.png": "png\n",
+    }
+    config = make_project(tmp_path, nav, pages)
+    result = run_check(config)
+    assert result.code == 0, result.stderr
