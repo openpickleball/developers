@@ -425,3 +425,24 @@ def test_indented_reference_definition_is_checked(
     result = run_check(config)
     assert result.code == 1
     assert f"index.md:{line}: absolute link" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("page", "expected"),
+    [
+        (
+            "Type <code> by mistake then [abs](/stack/).\n\nLater [b](/other/).\n",
+            ["index.md:1: absolute link", "index.md:3: absolute link"],
+        ),
+        ("<pre><code>x</pre> then [s](/zzz/)\n", ["index.md:1: absolute link"]),
+    ],
+    ids=["stray-code", "unbalanced-pre"],
+)
+def test_stray_raw_code_tags_do_not_hide_later_links(
+    tmp_path: Path, basic_nav: str, page: str, expected: list[str]
+) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 1
+    for line in expected:
+        assert line in result.stderr
