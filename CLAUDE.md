@@ -9,7 +9,7 @@ The developer site for OPEN, the Open Pickleball Evaluation Network, served at [
 - `docs/`: the site's pages. Every page is listed in `nav` in `mkdocs.yml`.
 - `overrides/main.html`: the theme override that shows the site-wide status notice.
 - `mkdocs.yml`: site configuration, which Zensical reads. `validation` makes `--strict` fail on links to missing pages and missing anchors.
-- `scripts/check_docs.py`: fails on a page missing from `nav`, a `nav` entry for a missing file, or an absolute link. CI runs it before the build. Its tests are in `tests/`.
+- `scripts/check_docs.py`: fails on a page missing from `nav`, a `nav` entry that is not a file in `docs/`, an absolute link, a link to a directory, or a relative link to a missing file. CI runs it before the build. Its tests are in `tests/`.
 - `plans/`: plans recorded for issues before their work lands, named `YYYY-MM-DD-issue-<N>-<slug>.md`. They live outside `docs/` so the site does not publish them.
 - `.github/workflows/pages.yml`: the tests, the check script, and the strict build on every pull request, and the deploy to Pages on a push to `main`.
 - `.github/workflows/dco.yml`: the `sign-off` check on pull requests.
@@ -21,7 +21,7 @@ The developer site for OPEN, the Open Pickleball Evaluation Network, served at [
 uv sync
 uv run zensical serve                # preview at http://localhost:8000
 uv run pytest                        # tests for the check script
-uv run python scripts/check_docs.py  # nav coverage and absolute links
+uv run python scripts/check_docs.py  # nav coverage and link targets
 uv run zensical build --strict       # the same build CI runs
 ```
 

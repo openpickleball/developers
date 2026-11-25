@@ -19,7 +19,7 @@ uv run python scripts/check_docs.py
 uv run zensical build --strict
 ```
 
-The strict build fails on a link to a missing page or a missing anchor. The check script, `scripts/check_docs.py`, fails on a page missing from the navigation, a navigation entry for a missing file, or an absolute link such as `/stack/`. CI runs it next to the build.
+The strict build fails on a link to a missing page or a missing anchor. The check script, `scripts/check_docs.py`, fails on a page missing from the navigation, a navigation entry that is not a file in `docs/`, an absolute link such as `/stack/`, a link to a directory such as `stack/`, or a relative link to a file that does not exist. CI runs it next to the build.
 
 ## Writing the site
 
