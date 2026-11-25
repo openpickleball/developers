@@ -11,10 +11,10 @@ The developer site for OPEN, the Open Pickleball Evaluation Network, served at [
 With [uv](https://docs.astral.sh/uv/) installed:
 
 ```bash
-uv run mkdocs serve
+uv run zensical serve
 ```
 
-The site is then at http://127.0.0.1:8000. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to write and check pages.
+The site is then at http://localhost:8000. It is built with [Zensical](https://zensical.org). See [CONTRIBUTING.md](CONTRIBUTING.md) for how to write and check pages.
 
 ## Security
 

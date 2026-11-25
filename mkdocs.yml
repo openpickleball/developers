@@ -5,6 +5,7 @@ copyright: Text licensed under CC BY 4.0. Build configuration licensed under Apa
 
 theme:
   name: material
+  variant: classic
   custom_dir: overrides
   font: false
   palette:
@@ -49,7 +50,5 @@ extra:
       name: Source for this site on GitHub
 
 validation:
-  omitted_files: warn
-  absolute_links: warn
-  unrecognized_links: warn
-  anchors: warn
+  invalid_links: true
+  invalid_link_anchors: true
