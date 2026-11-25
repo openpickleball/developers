@@ -32,7 +32,7 @@ A trial build of `main`'s files under Zensical 0.1.3 (see Proof) showed that it 
 - `tests/test_check_docs.py` (new, Apache-2.0 SPDX line): calls the script's `main(argv) -> int` (or runs it with `subprocess` and `sys.executable`) against projects built in `tmp_path`.
 - `.github/workflows/pages.yml`: the steps in criterion 7; drop the `env` block with `NO_MKDOCS_2_WARNING`. Keep action SHAs and comments as they are.
 - `README.md`, `CONTRIBUTING.md`, `CLAUDE.md`, `docs/stack.md`, `docs/architecture.md`, `docs/contributing.md`: the lines in criterion 9.
-- `.gitignore`: only if a Zensical build leaves a new untracked directory. Zensical writes `.cache/`, which is already ignored.
+- `.gitignore`: only if a Zensical build leaves a new untracked directory. Zensical writes `.cache/`, which is already ignored. Running the tests leaves `__pycache__/` directories, so `.gitignore` adds `__pycache__/`.
 
 ## Order of work
 
