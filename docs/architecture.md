@@ -86,4 +86,4 @@ Planned at `status.openpb.org` ([backend#139](https://github.com/openpickleball/
 
 ## This site
 
-[openpickleball/developers](https://github.com/openpickleball/developers) is a static MkDocs site on GitHub Pages. It calls no OPEN service and loads nothing from another host, so it stays up when the backend is down.
+[openpickleball/developers](https://github.com/openpickleball/developers) is a static site built with Zensical and served on GitHub Pages. It calls no OPEN service and loads nothing from another host, so it stays up when the backend is down.
