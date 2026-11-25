@@ -1,28 +1,17 @@
 # SPDX-License-Identifier: Apache-2.0
 """Tests for the SVG diagrams in diagrams/, which pages inline with snippets."""
 
-import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import pytest
+from diagram_rules import forbidden
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 DIAGRAMS = REPO_ROOT / "diagrams"
 DOCS = REPO_ROOT / "docs"
 SVG_NS = "{http://www.w3.org/2000/svg}"
 EXPECTED = ["architecture.svg", "match-to-rating.svg"]
-
-FORBIDDEN_PATTERNS = [
-    re.compile(r"\bhref\s*="),
-    re.compile(r"\bsrc\s*="),
-    re.compile(r"@import"),
-    re.compile(r"@font-face"),
-    re.compile(r"url\(\s*(?!#)"),
-    re.compile(r"<\s*(?:\w+:)?image\b"),
-    re.compile(r"<\s*(?:\w+:)?script\b"),
-    re.compile(r"<\s*(?:\w+:)?foreignObject\b"),
-]
 
 
 def diagram_files() -> list[Path]:
@@ -72,9 +61,7 @@ def test_diagram_ids_are_prefixed_and_unique() -> None:
 
 
 def test_diagram_loads_nothing_from_another_host(diagram: Path) -> None:
-    text = diagram.read_text()
-    for pattern in FORBIDDEN_PATTERNS:
-        assert not pattern.search(text), f"{diagram.name}: {pattern.pattern}"
+    assert forbidden(diagram.read_text()) == [], diagram.name
 
 
 def test_diagram_has_no_blank_lines(diagram: Path) -> None:
@@ -91,6 +78,4 @@ def test_diagram_is_referenced_by_a_page(diagram: Path) -> None:
 def test_diagram_stylesheet_loads_nothing_from_another_host() -> None:
     stylesheet = DOCS / "stylesheets" / "diagrams.css"
     assert stylesheet.is_file(), f"{stylesheet} is missing"
-    text = stylesheet.read_text()
-    for pattern in FORBIDDEN_PATTERNS:
-        assert not pattern.search(text), f"diagrams.css: {pattern.pattern}"
+    assert forbidden(stylesheet.read_text()) == [], "diagrams.css"
