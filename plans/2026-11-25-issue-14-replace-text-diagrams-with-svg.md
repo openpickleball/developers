@@ -30,6 +30,7 @@ Domain skills:
 - `mkdocs.yml`: `pymdownx.snippets` under `markdown_extensions` (after `pymdownx.superfences`), and `extra_css: [stylesheets/diagrams.css]`.
 - `docs/architecture.md`, `docs/match-to-rating.md`: the code blocks become a `<figure class="open-diagram">` holding `--8<-- "<name>.svg"`. There are no blank lines inside the figure.
 - `tests/test_diagrams.py`: new.
+- `scripts/check_docs.py`: `Renderer.from_config` resolves each relative `pymdownx.snippets` `base_path` against the config file's folder, because snippets resolves it against the current directory and the check must keep working from any directory. `tests/test_check_docs.py` gets a test that runs the check from another directory.
 - Phase 8 may touch `CLAUDE.md` and `CONTRIBUTING.md` (repository layout, how to edit a diagram).
 
 ## Order of work
