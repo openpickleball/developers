@@ -358,3 +358,70 @@ def test_reference_definition_with_title_is_checked(
     result = run_check(config)
     assert result.code == 1
     assert "link target files/missing.pdf does not exist" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("page", "expected"),
+    [
+        (
+            (
+                "- item\n\n    ```\n    code\n\n"
+                "See [the stack](/stack/) and [missing](files/missing.pdf).\n"
+            ),
+            [
+                "index.md:6: absolute link",
+                "index.md:6: link target files/missing.pdf does not exist",
+            ],
+        ),
+        (
+            "Some text\n    ```\nmore [a](/abs2/)\n\nand [b](/abs3/)\n",
+            ["index.md:3: absolute link", "index.md:5: absolute link"],
+        ),
+        ("# H\n\n```\nnot closed\n\n[a](/abs1/)\n", ["index.md:6: absolute link"]),
+    ],
+    ids=["unclosed-list-fence", "continuation-backticks", "unclosed-top-fence"],
+)
+def test_backticks_that_do_not_make_a_fence_do_not_hide_links(
+    tmp_path: Path, basic_nav: str, page: str, expected: list[str]
+) -> None:
+    config = make_project(tmp_path, basic_nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 1
+    for line in expected:
+        assert line in result.stderr
+
+
+@pytest.mark.parametrize(
+    "title",
+    ["'it's'", "(see (x))", '"a "b" c"'],
+    ids=["inner-quote", "nested-parens", "inner-double-quotes"],
+)
+def test_reference_with_odd_title_is_checked(
+    tmp_path: Path, basic_nav: str, title: str
+) -> None:
+    page = f"Hi [x][r].\n\n[r]: /abs/ {title}\n"
+    config = make_project(tmp_path, basic_nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 1
+    assert "absolute link" in result.stderr
+
+
+@pytest.mark.parametrize(
+    ("page", "line"),
+    [
+        ("!!! note\n\n    See [x][r].\n\n    [r]: /abs9/\n", 5),
+        ("- See [x][r].\n\n    [r]: /abs10/\n", 3),
+    ],
+    ids=["admonition", "list-item"],
+)
+def test_indented_reference_definition_is_checked(
+    tmp_path: Path, page: str, line: int
+) -> None:
+    nav = (
+        "nav:\n  - Home: index.md\n  - Stack: stack.md\n"
+        "markdown_extensions:\n  - admonition\n  - pymdownx.superfences\n"
+    )
+    config = make_project(tmp_path, nav, two_pages(page))
+    result = run_check(config)
+    assert result.code == 1
+    assert f"index.md:{line}: absolute link" in result.stderr
