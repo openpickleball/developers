@@ -51,6 +51,11 @@ All edits are in `docs/match-to-rating.md`. Use these wordings or close equivale
    Link the intro in step 4 to `#known-limitations`.
 8. Run the gate. Then build and grep `site/match-to-rating/index.html` for "evaluation repository", "PARAMETERS.md", "engine/issues/164", "engine/issues/163", "backend/issues/206", "backend/issues/213", and `id="known-limitations"`.
 
+## Departures during implementation
+
+- Step 6: the sentence after the list is scoped to anomaly flags and marked planned: "These anomaly flags are planned too. OPEN will show them to organizers and moderators, and never applies an automatic penalty for them: an anomaly flag does not change a rating or stop a match counting." It adds that a near duplicate flag is different and holds a match, linking `#4-duplicate-detection`. The suggested wording said "a flag does not ... stop a match counting", which contradicts step 4 of the page, where a near duplicate flag holds both matches. backend#206 and backend#213 are open, so the flags are not built yet.
+- Step 7: the intro says the README "lists what the engine does not catch" instead of "what engine 1.0.0 does not catch". The README says its findings come from a pre-1.0 build (0.3.0.dev0).
+
 ## Risks
 
 - Overclaiming: saying the evaluation validates the engine. The text must say "not pre-registered" and "no result is confirmatory".
