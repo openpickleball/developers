@@ -6,7 +6,7 @@ It reports a Markdown page under the docs directory that is missing from
 an absolute link such as ``/stack/``, a link to a directory such as
 ``stack/``, and a relative link to a file that does not exist. It finds links
 by rendering each page with Python-Markdown and the same extensions Zensical
-uses, so links in code are ignored exactly as the build ignores them. It
+uses. Rendering escapes links written in code, so they are ignored. It
 prints one line per problem to stderr and exits 1 if there are any problems,
 else 0.
 """
@@ -25,7 +25,6 @@ import yaml
 from zensical.config import parse_mkdocs_config
 
 URL_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
-CODE_TAGS = {"pre", "code"}
 LINK_ATTRIBUTES = {"href", "src"}
 
 
@@ -61,29 +60,21 @@ class Renderer:
 
 
 class LinkCollector(HTMLParser):
-    """Collect href and src values that are not inside pre or code."""
+    """Collect every href and src value in rendered HTML.
+
+    Python-Markdown escapes everything in code spans and code blocks, so a
+    link written there never reaches the HTML as a tag. Any href or src that
+    does appear, even inside pre or code, came from raw HTML and is live.
+    """
 
     def __init__(self) -> None:
         super().__init__(convert_charrefs=True)
         self.targets: list[str] = []
-        self.code_depth = 0
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag in CODE_TAGS:
-            self.code_depth += 1
-        if self.code_depth:
-            return
         for name, value in attrs:
             if name in LINK_ATTRIBUTES and value is not None:
                 self.targets.append(value)
-
-    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag not in CODE_TAGS:
-            self.handle_starttag(tag, attrs)
-
-    def handle_endtag(self, tag: str) -> None:
-        if tag in CODE_TAGS and self.code_depth:
-            self.code_depth -= 1
 
 
 def is_external(target: str) -> bool:
@@ -107,7 +98,7 @@ def nav_paths(entry: object) -> Iterator[str]:
 
 
 def link_targets(renderer: Renderer, text: str) -> list[str]:
-    """Return every link target the rendered page has outside code.
+    """Return every link target in the rendered page.
 
     Reference definitions count even when no link uses them.
     """
