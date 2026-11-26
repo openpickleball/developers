@@ -4,46 +4,9 @@ OPEN is split into a few repositories, each with one job. The backend stores the
 
 ## How the pieces fit together
 
-```text
-   Players and organizers           Partners (apps, league platforms,
-   in a browser                     clubs, tournaments)
-          |                                   |
-          v                                   v
- +------------------+              +----------------------+
- | Frontend web app |              | Partner integrations |
- | (frontend repo,  |              | OAuth2 tokens        |
- |  planned)        |              | (API planned)        |
- +------------------+              +----------------------+
-          |  /api/v1/ and /_allauth/          |  /oauth/ and /api/v1/
-          v                                   v
- +-----------------------------------------------------------+
- | Backend (Django)                                          |
- |  API at /api/v1/   accounts at /_allauth/   admin         |
- |  match ledger, confirmation workflow, audit log           |
- |  Celery workers and beat: default, ratings, email,        |
- |  webhooks queues                                          |
- |                                                           |
- |  +---------------------------+                            |
- |  | Engine (Python package),  |  imported in-process,      |
- |  | replay and live updates   |  planned                   |
- |  +---------------------------+                            |
- +-----------------------------------------------------------+
-       |                  |                   |
-       v                  v                   v
-   Postgres         Valkey (cache        Email provider
-   (ledger and      and Celery           (Resend)
-   all records)     broker)
-
- Rating spec (rating-spec repository): the official definition
- of the math. The engine implements a spec version, identified by
- its config version and config fingerprint.
-
- openpb.org: a static teaser from the frontend repository on
- GitHub Pages. It is live and calls no backend.
-
- Status page (status.openpb.org, planned): checks the backend
- from outside, so it stays up when the backend is down.
-```
+<figure class="open-diagram" tabindex="0" aria-label="Architecture diagram">
+--8<-- "architecture.svg"
+</figure>
 
 ## Frontend
 

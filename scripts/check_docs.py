@@ -26,6 +26,17 @@ from zensical.config import parse_mkdocs_config
 
 URL_SCHEME = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.-]*:")
 LINK_ATTRIBUTES = {"href", "src"}
+SNIPPETS = "pymdownx.snippets"
+
+
+def resolve_base_paths(base_path: object, root: Path) -> list[str]:
+    """Resolve each relative snippets base_path against the config's folder.
+
+    Snippets resolves a relative base_path against the current directory,
+    so without this the check works only when run from the repository root.
+    """
+    entries = [base_path] if isinstance(base_path, str) else list(base_path or [])
+    return [str(root / entry) for entry in entries]
 
 
 @dataclass(frozen=True)
@@ -48,7 +59,16 @@ class Renderer:
     @classmethod
     def from_config(cls, config_path: Path) -> "Renderer":
         config = parse_mkdocs_config(str(config_path))
-        return cls(config["markdown_extensions"], config["mdx_configs"])
+        configs = dict(config["mdx_configs"])
+        snippets = configs.get(SNIPPETS)
+        if isinstance(snippets, dict) and "base_path" in snippets:
+            configs[SNIPPETS] = {
+                **snippets,
+                "base_path": resolve_base_paths(
+                    snippets["base_path"], config_path.parent
+                ),
+            }
+        return cls(config["markdown_extensions"], configs)
 
     def render(self, text: str) -> tuple[str, list[str]]:
         """Return the page's HTML and every reference definition's target."""

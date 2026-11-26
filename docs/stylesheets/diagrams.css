@@ -1,0 +1,69 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Inline SVG diagrams from diagrams/. Colors come only from theme variables,
+   so both palettes and the manual toggle restyle them. */
+.md-typeset figure.open-diagram {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.md-typeset figure.open-diagram:focus-visible {
+  outline: 2px solid var(--md-accent-fg-color);
+  outline-offset: 2px;
+}
+.open-diagram svg {
+  display: block;
+  width: 100%;
+  min-width: 640px;
+  max-width: 760px;
+  height: auto;
+  margin: 0 auto;
+  font-family: inherit;
+}
+.open-diagram text {
+  font-family: inherit;
+  font-size: 13px;
+  fill: var(--md-default-fg-color--light);
+}
+.open-diagram .od-name {
+  font-size: 14px;
+  font-weight: 600;
+  fill: var(--md-default-fg-color);
+}
+.open-diagram .od-strong {
+  font-weight: 600;
+  fill: var(--md-default-fg-color);
+}
+.open-diagram .od-label {
+  font-size: 12.5px;
+}
+.open-diagram .od-box {
+  fill: var(--md-code-bg-color);
+  stroke: var(--md-default-fg-color--light);
+  stroke-width: 1.25;
+}
+.open-diagram .od-group {
+  fill: none;
+  stroke: var(--md-default-fg-color--lighter);
+}
+.open-diagram .od-inner {
+  fill: var(--md-default-bg-color);
+}
+.open-diagram .od-note {
+  fill: none;
+  stroke: var(--md-default-fg-color--lighter);
+}
+.open-diagram .od-line {
+  fill: none;
+  stroke: var(--md-default-fg-color--light);
+  stroke-width: 1.25;
+}
+.open-diagram .od-planned {
+  stroke-dasharray: 5 4;
+}
+.open-diagram .od-head {
+  fill: var(--md-default-fg-color--light);
+  stroke: none;
+}

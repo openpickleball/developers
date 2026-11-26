@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 432" role="img" aria-labelledby="m2r-title" aria-describedby="m2r-desc">
+  <title id="m2r-title">How a match becomes a rating</title>
+  <desc id="m2r-desc">A match moves through five steps in order: submit, permission, validate, duplicates, and confirm or dispute. A confirmed match goes into the append-only ledger of counted matches. From the ledger two planned paths lead to ratings: live update (provisional, planned) and replay with provenance (planned in backend). Both lead to ratings, which are not OPEN ratings and are served by an API that is planned. Solid outlines and lines are implemented; dashed ones are planned.</desc>
+  <defs>
+    <marker id="m2r-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+      <path class="od-head" d="M 0 0 L 10 5 L 0 10 z"/>
+    </marker>
+  </defs>
+  <rect class="od-box" x="20" y="20" width="96" height="42" rx="8"/>
+  <text class="od-name" x="68" y="46" text-anchor="middle">submit</text>
+  <line class="od-line" x1="116" y1="41" x2="148" y2="41" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box" x="150" y="20" width="112" height="42" rx="8"/>
+  <text class="od-name" x="206" y="46" text-anchor="middle">permission</text>
+  <line class="od-line" x1="262" y1="41" x2="294" y2="41" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box" x="296" y="20" width="102" height="42" rx="8"/>
+  <text class="od-name" x="347" y="46" text-anchor="middle">validate</text>
+  <line class="od-line" x1="398" y1="41" x2="430" y2="41" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box" x="432" y="20" width="112" height="42" rx="8"/>
+  <text class="od-name" x="488" y="46" text-anchor="middle">duplicates</text>
+  <line class="od-line" x1="544" y1="41" x2="576" y2="41" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box" x="578" y="20" width="162" height="42" rx="8"/>
+  <text class="od-name" x="659" y="46" text-anchor="middle">confirm or dispute</text>
+  <path class="od-line" d="M 659 62 V 86 H 380 V 112" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box" x="220" y="114" width="320" height="58" rx="8"/>
+  <text class="od-name" x="380" y="138" text-anchor="middle">append-only ledger</text>
+  <text class="od-text" x="380" y="158" text-anchor="middle">(counted matches)</text>
+  <path class="od-line od-planned" d="M 380 172 V 196 H 190 V 226" marker-end="url(#m2r-arrow)"/>
+  <path class="od-line od-planned" d="M 380 196 H 570 V 226" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box od-planned" x="50" y="228" width="280" height="58" rx="8"/>
+  <text class="od-name" x="190" y="252" text-anchor="middle">live update</text>
+  <text class="od-text" x="190" y="272" text-anchor="middle">(provisional, planned)</text>
+  <rect class="od-box od-planned" x="430" y="228" width="280" height="58" rx="8"/>
+  <text class="od-name" x="570" y="252" text-anchor="middle">replay with provenance</text>
+  <text class="od-text" x="570" y="272" text-anchor="middle">(planned in backend)</text>
+  <path class="od-line od-planned" d="M 190 286 V 335 H 298" marker-end="url(#m2r-arrow)"/>
+  <path class="od-line od-planned" d="M 570 286 V 335 H 462" marker-end="url(#m2r-arrow)"/>
+  <rect class="od-box od-planned" x="300" y="314" width="160" height="42" rx="8"/>
+  <text class="od-name" x="380" y="340" text-anchor="middle">ratings</text>
+  <text class="od-text" x="380" y="380" text-anchor="middle">(not OPEN ratings, served by an API that is planned)</text>
+  <line class="od-line" x1="20" y1="416" x2="52" y2="416"/>
+  <text class="od-label" x="60" y="420">implemented</text>
+  <line class="od-line od-planned" x1="160" y1="416" x2="192" y2="416"/>
+  <text class="od-label" x="200" y="420">planned</text>
+</svg>

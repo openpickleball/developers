@@ -29,6 +29,7 @@ The strict build fails on a link to a missing page or a missing anchor. The chec
 - Check every claim against the repository it describes, on `main`. Mark each step of how a match becomes a rating as implemented or planned.
 - Keep the status notice: no OPEN rating is live, the engine is the reference implementation of the OPEN rating method, and its outputs are not OPEN ratings.
 - Load nothing from another host: no web fonts, CDN scripts, Mermaid, or remote images. The site must load while every OPEN service is down.
+- Diagrams are SVG files in `diagrams/`, which a page pulls in with a `--8<-- "<name>.svg"` line inside a figure. Use the existing figures and SVGs as the model: they carry the attributes for screen readers and keyboard scrolling that the tests require. Take colors from the classes in `docs/stylesheets/diagrams.css`, never hard-coded, so they follow light and dark mode. Draw planned parts dashed and implemented parts solid, with a legend. Keep blank lines out of the figure and the SVG. `zensical serve` does not watch `diagrams/`: after editing an SVG, change the page that includes it to see the edit.
 
 ## Hard rules
 

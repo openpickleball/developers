@@ -41,6 +41,12 @@ markdown_extensions:
       permalink: true
   - pymdownx.details
   - pymdownx.superfences
+  - pymdownx.snippets:
+      base_path: [diagrams]
+      check_paths: true
+
+extra_css:
+  - stylesheets/diagrams.css
 
 extra:
   generator: false
