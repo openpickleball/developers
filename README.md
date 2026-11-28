@@ -16,6 +16,8 @@ uv run zensical serve
 
 The site is then at http://localhost:8000. It is built with [Zensical](https://zensical.org). See [CONTRIBUTING.md](CONTRIBUTING.md) for how to write and check pages.
 
+The Contributing page summarizes setup for each repository. Those summaries must match the source-of-truth READMEs. See issue #20 for details on aligning the backend and engine sections.
+
 ## Security
 
 Please report security problems privately, as the [security policy](https://github.com/openpickleball/.github/blob/main/SECURITY.md) describes.
